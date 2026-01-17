@@ -4,17 +4,44 @@
 @section('page-title', 'Transaksi Kasir')
 
 @section('content')
-
+<div class="no-select">
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
     {{-- DAFTAR BARANG --}}
     <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden flex flex-col h-[calc(100vh-8rem)]">
-        <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
-            <h2 class="font-bold text-slate-800 text-lg flex items-center gap-2">
-                <span class="text-xl">📦</span> Daftar Barang
-            </h2>
-            <div class="text-sm text-slate-500">
-                Total Barang: <span class="font-semibold text-slate-700">{{ $barang->count() }}</span>
+        <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center gap-4">
+            <div class="flex items-center gap-4">
+                <h2 class="font-bold text-slate-800 text-lg flex items-center gap-2">
+                    <span class="text-xl">📦</span> Daftar Barang
+                </h2>
+                
+                <form action="{{ route('kasir.dashboard') }}" method="GET" class="flex items-center gap-2">
+                    <div class="relative">
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari barang..." 
+                               class="bg-white border border-slate-300 text-slate-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-9 pr-4 py-1.5 shadow-sm outline-none">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-4 w-4 text-slate-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <select name="kategori" 
+                            class="bg-white border border-slate-300 text-slate-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-3 pr-8 py-1.5 shadow-sm cursor-pointer outline-none max-w-[150px]">
+                        <option value="">Semua Kategori</option>
+                        @foreach($kategori as $k)
+                            <option value="{{ $k->id_kategori }}" {{ request('kategori') == $k->id_kategori ? 'selected' : '' }}>
+                                {{ $k->nama_kategori }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                    <button type="submit" class="hidden">Cari</button>
+                </form>
+            </div>
+
+            <div class="text-sm text-slate-500 whitespace-nowrap">
+                Total: <span class="font-semibold text-slate-700">{{ $barang->count() }}</span>
             </div>
         </div>
 
@@ -28,64 +55,8 @@
                         <th class="px-6 py-3 text-center w-24">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-100">
-                    @forelse ($barang as $b)
-                    <tr class="hover:bg-slate-50/80 transition-colors group">
-                        <td class="px-6 py-3 font-medium text-slate-800">
-                            {{ $b->nama_barang }}
-                            <div class="text-xs text-slate-400 font-normal">{{ $b->kategori->nama_kategori ?? '-' }}</div>
-                        </td>
-                        <td class="px-6 py-3 text-right font-medium text-slate-700 font-mono">
-                            Rp {{ number_format($b->harga_jual) }}
-                        </td>
-                        <td class="px-6 py-3 text-center">
-                            @if($b->stok <= 5 && $b->stok > 0)
-                                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">
-                                    {{ $b->stok }}
-                                </span>
-                            @elseif($b->stok == 0)
-                                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-500">
-                                    0
-                                </span>
-                            @else
-                                <span class="text-slate-600">{{ $b->stok }}</span>
-                            @endif
-                        </td>
-                        <td class="px-6 py-3 text-center">
-                            @if ($b->stok > 0)
-                                <button
-                                    type="button"
-                                    class="add-item bg-green-50 text-green-600 hover:bg-green-600 hover:text-white p-2 rounded-lg transition-all active:scale-95 shadow-sm hover:shadow-md border border-green-200 hover:border-green-600"
-                                    title="Tambah ke Keranjang"
-                                    data-id="{{ $b->id_barang }}"
-                                    data-nama="{{ $b->nama_barang }}"
-                                    data-harga="{{ $b->harga_jual }}"
-                                    data-stok="{{ $b->stok }}">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                                    </svg>
-                                </button>
-                            @else
-                                <button
-                                    type="button"
-                                    disabled
-                                    class="bg-slate-100 text-slate-400 p-2 rounded-lg cursor-not-allowed border border-slate-200"
-                                    title="Stok Habis">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
-                                    </svg>
-                                </button>
-                            @endif
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="4" class="text-center py-10 text-slate-500">
-                            <span class="block mb-2 text-2xl opacity-40">🔍</span>
-                            Tidak ada barang ditemukan
-                        </td>
-                    </tr>
-                    @endforelse
+                <tbody class="divide-y divide-slate-100" id="itemsTableBody">
+                    @include('kasir.partials.items_list', ['barang' => $barang])
                 </tbody>
             </table>
         </div>
@@ -130,7 +101,8 @@
                 <input type="hidden" name="items" id="itemsInput">
 
                 <button
-                    type="submit"
+                    type="button"
+                    onclick="openPaymentModal()"
                     id="btnSubmit"
                     class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold shadow-lg shadow-blue-600/20 hover:bg-blue-700 hover:shadow-blue-700/30 transition-all active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
                     disabled>
@@ -145,10 +117,51 @@
 
 </div>
 
+{{-- PAYMENT MODAL --}}
+<div id="paymentModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center px-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md animate-modal-in overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+            <h3 class="font-bold text-lg text-slate-800">Pembayaran & Kembalian</h3>
+            <button onclick="closePaymentModal()" class="text-slate-400 hover:text-slate-600 text-2xl">&times;</button>
+        </div>
+        
+        <div class="p-6 space-y-6">
+            <div>
+                <label class="block text-sm font-medium text-slate-500 mb-1">Total Tagihan</label>
+                <div class="text-3xl font-bold text-slate-800 font-mono" id="modalTotal">Rp 0</div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-2">Uang Diterima (Rp)</label>
+                <input type="number" id="uangDiterima" 
+                       class="w-full text-lg font-mono border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:outline-none" 
+                       placeholder="0">
+            </div>
+
+            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                <div class="flex justify-between items-center">
+                    <span class="text-slate-600 font-medium">Kembalian</span>
+                    <span id="kembalian" class="font-bold text-xl text-slate-400 font-mono">Rp 0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="px-6 py-4 bg-slate-50 border-t border-slate-200 flex gap-3">
+            <button onclick="closePaymentModal()" class="flex-1 px-4 py-2 text-slate-600 hover:bg-slate-200 rounded-lg font-medium transition">
+                Batal
+            </button>
+            <button onclick="submitTransaction()" id="btnConfirmPay" disabled class="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-green-700 shadow-lg shadow-green-600/20 disabled:opacity-50 disabled:cursor-not-allowed transition">
+                Konfirmasi Bayar
+            </button>
+        </div>
+    </div>
+</div>
+
 {{-- ================= JS KASIR (FINAL) ================= --}}
 <script>
 // JS Logic
 let cart = {}
+let totalAmount = 0
 
 const cartDiv    = document.getElementById('cart')
 const totalEl    = document.getElementById('total')
@@ -157,6 +170,69 @@ const errorMsg   = document.getElementById('errorMsg')
 const errorText  = errorMsg.querySelector('.msg-text')
 const btnSubmit  = document.getElementById('btnSubmit')
 const form       = document.getElementById('formTransaksi')
+const itemsTable = document.getElementById('itemsTableBody')
+
+// Payment Modal Elements
+const paymentModal = document.getElementById('paymentModal')
+const modalTotalEl = document.getElementById('modalTotal')
+const uangDiterimaEl = document.getElementById('uangDiterima')
+const kembalianEl   = document.getElementById('kembalian')
+const btnConfirmPay = document.getElementById('btnConfirmPay')
+
+// AJAX Search & Filter
+const searchInput   = document.querySelector('input[name="search"]')
+const categoryInput = document.querySelector('select[name="kategori"]')
+
+function fetchItems() {
+    const search = searchInput.value
+    const category = categoryInput.value
+    
+    // Show loading state (optional)
+    itemsTable.style.opacity = '0.5'
+
+    fetch(`{{ route('kasir.items.search') }}?search=${search}&kategori=${category}`)
+        .then(response => response.text())
+        .then(html => {
+            itemsTable.innerHTML = html
+            itemsTable.style.opacity = '1'
+            reattachAddItemListeners()
+        })
+        .catch(err => {
+            console.error('Error fetching items:', err)
+            itemsTable.style.opacity = '1'
+        })
+}
+
+// Debounce helper
+function debounce(func, timeout = 300){
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => { func.apply(this, args); }, timeout);
+  };
+}
+
+const debouncedFetch = debounce(() => fetchItems(), 100)
+// Gunakan debounce agak cepat untuk search, dan langsung untuk select
+
+if(searchInput) {
+    searchInput.addEventListener('input', () => {
+        debouncedFetch()
+    })
+    // Prevent form submit on enter
+    searchInput.addEventListener('keydown', (e) => {
+        if(e.key === 'Enter') {
+            e.preventDefault()
+            fetchItems() // fetch immediately on enter
+        }
+    })
+}
+
+if(categoryInput) {
+    categoryInput.addEventListener('change', () => {
+        fetchItems()
+    })
+}
 
 function showError(message) {
     errorText.textContent = message
@@ -168,39 +244,52 @@ function showError(message) {
     }, 3000)
 }
 
-// Tambah barang
-document.querySelectorAll('.add-item').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const stok = parseInt(btn.dataset.stok)
+function reattachAddItemListeners() {
+    document.querySelectorAll('.add-item').forEach(btn => {
+        // Clone button to remove old listeners (simple way to avoid duplicates if using addEventListener)
+        // or just ensure we don't double bind. 
+        // Better: use delegation on the table body or just re-bind safely.
+        // Since we replace innerHTML, the old buttons are gone. We just bind new ones.
+        
+        btn.addEventListener('click', () => {
+            const stok = parseInt(btn.dataset.stok)
 
-        if (stok <= 0) {
-            showError('Stok barang habis')
-            return
-        }
-
-        const id    = btn.dataset.id
-        const nama  = btn.dataset.nama
-        const harga = parseInt(btn.dataset.harga)
-
-        if (!cart[id]) {
-            cart[id] = { nama, harga, qty: 1, stok }
-        } else {
-            if (cart[id].qty >= stok) {
-                showError('Stok barang tersedia hanya ' + stok)
+            if (stok <= 0) {
+                showError('Stok barang habis')
                 return
             }
-            cart[id].qty++
-        }
 
-        renderCart()
+            const id    = btn.dataset.id
+            const nama  = btn.dataset.nama
+            const harga = parseInt(btn.dataset.harga)
+
+            addItemToCart(id, nama, harga, stok)
+        })
     })
-})
+}
+
+function addItemToCart(id, nama, harga, stok) {
+    if (!cart[id]) {
+        cart[id] = { nama, harga, qty: 1, stok }
+    } else {
+        if (cart[id].qty >= stok) {
+            showError('Stok barang tersedia hanya ' + stok)
+            return
+        }
+        cart[id].qty++
+    }
+    renderCart()
+}
+
+// Initial Listener Attach
+reattachAddItemListeners()
+
 
 
 // Render keranjang
 function renderCart() {
     cartDiv.innerHTML = ''
-    let total = 0
+    totalAmount = 0
     const cartKeys = Object.keys(cart)
 
     if (cartKeys.length === 0) {
@@ -221,7 +310,7 @@ function renderCart() {
     cartKeys.forEach((id) => {
         const item = cart[id]
         const subtotal = item.harga * item.qty
-        total += subtotal
+        totalAmount += subtotal
 
         cartDiv.innerHTML += `
         <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
@@ -257,7 +346,7 @@ function renderCart() {
         </div>`
     })
 
-    totalEl.textContent = 'Rp ' + total.toLocaleString()
+    totalEl.textContent = 'Rp ' + totalAmount.toLocaleString()
     itemsInput.value = JSON.stringify(cart)
     btnSubmit.disabled = false
 }
@@ -288,6 +377,78 @@ function removeItem(id) {
     renderCart()
 }
 
+// === PAYMENT MODAL LOGIC ===
+function openPaymentModal() {
+    if(totalAmount <= 0) return
+    
+    modalTotalEl.innerText = 'Rp ' + totalAmount.toLocaleString()
+    uangDiterimaEl.value = ''
+    resetKembalian()
+    
+    paymentModal.classList.remove('hidden')
+    setTimeout(() => uangDiterimaEl.focus(), 100)
+}
+
+function closePaymentModal() {
+    paymentModal.classList.add('hidden')
+}
+
+// Hitung Kembalian
+uangDiterimaEl.addEventListener('input', (e) => {
+    const uang = parseInt(e.target.value) || 0
+    const kembalian = uang - totalAmount
+    
+    if(uang >= totalAmount) {
+        kembalianEl.innerText = 'Rp ' + kembalian.toLocaleString()
+        kembalianEl.classList.remove('text-red-500', 'text-slate-400')
+        kembalianEl.classList.add('text-green-600')
+        btnConfirmPay.disabled = false
+    } else {
+        // Jika kurang bayar
+        const kurang = totalAmount - uang
+        kembalianEl.innerText = '- Rp ' + kurang.toLocaleString()
+        kembalianEl.classList.remove('text-green-600', 'text-slate-400')
+        kembalianEl.classList.add('text-red-500')
+        btnConfirmPay.disabled = true
+    }
+    
+    if(e.target.value === '') resetKembalian()
+})
+
+function resetKembalian() {
+    kembalianEl.innerText = 'Rp 0'
+    kembalianEl.classList.remove('text-green-600', 'text-red-500')
+    kembalianEl.classList.add('text-slate-400')
+    btnConfirmPay.disabled = true
+}
+
+// Enter shortcut di input uang
+uangDiterimaEl.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter' && !btnConfirmPay.disabled) {
+        submitTransaction()
+    }
+})
+
+// Submit Transaksi Final
+function submitTransaction() {
+    // Show Loading on Button
+    btnConfirmPay.disabled = true
+    btnConfirmPay.innerHTML = `
+        <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        Memproses...
+    `
+    
+    form.submit()
+}
+
+// Tutup modal dengan ESC
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closePaymentModal()
+})
+
 // Validasi sebelum submit
 form.addEventListener('submit', e => {
     if (Object.keys(cart).length === 0) {
@@ -312,3 +473,43 @@ form.addEventListener('submit', e => {
 })
 </script>
 @endsection
+{{-- PAYMENT MODAL --}}
+<div id="paymentModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center px-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md animate-modal-in overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+            <h3 class="font-bold text-lg text-slate-800">Pembayaran & Kembalian</h3>
+            <button onclick="closePaymentModal()" class="text-slate-400 hover:text-slate-600 text-2xl">&times;</button>
+        </div>
+        
+        <div class="p-6 space-y-6">
+            <div>
+                <label class="block text-sm font-medium text-slate-500 mb-1">Total Tagihan</label>
+                <div class="text-3xl font-bold text-slate-800 font-mono" id="modalTotal">Rp 0</div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-2">Uang Diterima (Rp)</label>
+                <input type="number" id="uangDiterima" 
+                       class="w-full text-lg font-mono border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:outline-none" 
+                       placeholder="0">
+            </div>
+
+            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                <div class="flex justify-between items-center">
+                    <span class="text-slate-600 font-medium">Kembalian</span>
+                    <span id="kembalian" class="font-bold text-xl text-slate-400 font-mono">Rp 0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="px-6 py-4 bg-slate-50 border-t border-slate-200 flex gap-3">
+            <button onclick="closePaymentModal()" class="flex-1 px-4 py-2 text-slate-600 hover:bg-slate-200 rounded-lg font-medium transition">
+                Batal
+            </button>
+            <button onclick="submitTransaction()" id="btnConfirmPay" disabled class="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-green-700 shadow-lg shadow-green-600/20 disabled:opacity-50 disabled:cursor-not-allowed transition">
+                Konfirmasi Bayar
+            </button>
+        </div>
+    </div>
+</div>
+</div>

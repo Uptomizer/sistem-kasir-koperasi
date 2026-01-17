@@ -93,4 +93,21 @@ class BarangController extends Controller
             ->route('admin.barang.index')
             ->with('success', 'Stok berhasil diperbarui');
     }
+
+    public function getItems(Request $request)
+    {
+        $query = Barang::with('kategori')->orderBy('nama_barang');
+
+        if ($request->kategori) {
+            $query->where('id_kategori', $request->kategori);
+        }
+
+        if ($request->search) {
+             $query->whereRaw('LOWER(nama_barang) LIKE ?', [strtolower($request->search) . '%']);
+        }
+
+        $barang = $query->get();
+
+        return view('admin.barang.partials.list', compact('barang'));
+    }
 }

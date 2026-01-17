@@ -6,18 +6,44 @@
 @section('content')
 <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
     
-    <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-        <h2 class="font-bold text-slate-800 text-lg">Daftar Barang</h2>
-        <button
-    onclick="openBarangModal()"
-    class="bg-blue-600 text-white px-5 py-2 rounded-lg font-medium text-sm
-           shadow-lg shadow-blue-600/20 hover:bg-blue-700 hover:shadow-blue-700/30
-           transition-all active:scale-95 flex items-center gap-2">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-        <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
-    </svg>
-    Tambah Barang
-</button>
+    <div class="px-6 py-5 border-b border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-50/50">
+        <h2 class="font-bold text-slate-800 text-lg whitespace-nowrap">Daftar Barang</h2>
+        
+        <div class="flex flex-col md:flex-row items-center gap-3 w-full md:w-auto">
+            {{-- SEARCH & FILTER --}}
+            <div class="flex items-center gap-2 w-full md:w-auto">
+                <div class="relative w-full md:w-64">
+                    <input type="text" name="search" placeholder="Cari barang..." 
+                           class="bg-white border border-slate-300 text-slate-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-9 pr-4 py-2 shadow-sm outline-none transition-all">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg class="h-4 w-4 text-slate-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
+                </div>
+
+                <select name="kategori" 
+                        class="bg-white border border-slate-300 text-slate-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full md:w-auto pl-3 pr-8 py-2 shadow-sm cursor-pointer outline-none">
+                    <option value="">Semua Kategori</option>
+                    @foreach($kategori as $k)
+                        <option value="{{ $k->id_kategori }}">
+                            {{ $k->nama_kategori }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <button
+                onclick="openBarangModal()"
+                class="bg-blue-600 text-white px-5 py-2 rounded-lg font-medium text-sm
+                       shadow-lg shadow-blue-600/20 hover:bg-blue-700 hover:shadow-blue-700/30
+                       transition-all active:scale-95 flex items-center gap-2 w-full md:w-auto justify-center whitespace-nowrap">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                </svg>
+                Tambah
+            </button>
+        </div>
     </div>
 
     @if (session('success'))
@@ -32,9 +58,9 @@
     @endif
 
     <div class="p-6">
-        <div class="overflow-x-auto rounded-lg border border-slate-200">
+        <div class="overflow-x-auto overflow-y-auto max-h-[500px] rounded-lg border border-slate-200">
             <table class="w-full text-sm text-left">
-                <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200 uppercase tracking-wider text-xs">
+                <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200 uppercase tracking-wider text-xs sticky top-0 z-10 shadow-sm">
                     <tr>
                         <th class="px-6 py-4">Barang</th>
                         <th class="px-6 py-4">Kategori</th>
@@ -43,75 +69,60 @@
                         <th class="px-6 py-4 text-center w-48">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-100 bg-white">
-                    @foreach ($barang as $row)
-                    <tr class="hover:bg-slate-50/80 transition-colors">
-                        <td class="px-6 py-4 font-medium text-slate-800">
-                            {{ $row->nama_barang }}
-                        </td>
-                        <td class="px-6 py-4 text-slate-600">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
-                                {{ $row->kategori->nama_kategori }}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-right font-medium text-slate-700">
-                            Rp {{ number_format($row->harga_jual) }}
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            @if($row->stok <= 5)
-                                <span class="text-red-600 font-bold bg-red-50 px-2 py-1 rounded">
-                                    {{ $row->stok }}
-                                </span>
-                            @else
-                                <span class="text-slate-600 font-medium bg-slate-100 px-2 py-1 rounded">
-                                    {{ $row->stok }}
-                                </span>
-                            @endif
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            <div class="flex items-center justify-center gap-2">
-                                <a href="{{ route('admin.barang.edit', $row) }}"
-                                   class="text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 p-2 rounded-md transition-colors"
-                                   title="Edit">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
-                                </a>
-
-                                <button
-                                   type="button"
-                                   onclick="openStokModal(this)"
-                                   data-action="{{ route('admin.barang.updateStok', $row) }}"
-                                   data-name="{{ $row->nama_barang }}"
-                                   data-stok="{{ $row->stok }}"
-                                   class="text-emerald-600 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100 p-2 rounded-md transition-colors"
-                                   title="Kelola Stok">
-                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
-                                </button>
-
-                                    <button
-                                        type="button"
-                                        onclick="openDeleteModal('{{ route('admin.barang.destroy', $row) }}')"
-                                        class="text-red-600 hover:text-red-800 bg-red-50 hover:bg-red-100 p-2 rounded-md transition-colors"
-                                        title="Hapus">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                                    </button>
-                            </div>
-                        </td>
-                    </tr>
-                    @endforeach
-                    @if($barang->isEmpty())
-                        <tr>
-                            <td colspan="5" class="text-center py-12 text-slate-500">
-                                <span class="block mb-2 text-2xl opacity-40">📦</span>
-                                Belum ada barang
-                            </td>
-                        </tr>
-                    @endif
+                <tbody class="divide-y divide-slate-100 bg-white" id="itemsTableBody">
+                    @include('admin.barang.partials.list', ['barang' => $barang])
                 </tbody>
             </table>
         </div>
     </div>
 
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const searchInput = document.querySelector('input[name="search"]');
+        const categoryInput = document.querySelector('select[name="kategori"]');
+        const itemsTable = document.getElementById('itemsTableBody');
+
+        function fetchItems() {
+            const search = searchInput.value;
+            const category = categoryInput.value;
+            
+            // Loading state
+            itemsTable.style.opacity = '0.5';
+
+            fetch(`{{ route('admin.barang.items') }}?search=${search}&kategori=${category}`)
+                .then(response => response.text())
+                .then(html => {
+                    itemsTable.innerHTML = html;
+                    itemsTable.style.opacity = '1';
+                })
+                .catch(err => {
+                    console.error('Error fetching items:', err);
+                    itemsTable.style.opacity = '1';
+                });
+        }
+
+        // Debounce helper
+        function debounce(func, timeout = 300){
+            let timer;
+            return (...args) => {
+                clearTimeout(timer);
+                timer = setTimeout(() => { func.apply(this, args); }, timeout);
+            };
+        }
+
+        const debouncedFetch = debounce(() => fetchItems(), 300);
+
+        if(searchInput) {
+            searchInput.addEventListener('input', debouncedFetch);
+        }
+
+        if(categoryInput) {
+            categoryInput.addEventListener('change', fetchItems);
+        }
+    });
+</script>
 
 @endsection
 {{-- MODAL TAMBAH BARANG --}}

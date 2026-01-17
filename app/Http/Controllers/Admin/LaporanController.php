@@ -38,7 +38,10 @@ class LaporanController extends Controller
         $penjualan = $query->paginate(5)->withQueryString();
 
         if ($request->ajax()) {
-            return view('admin.laporan.partials.list', compact('penjualan'))->render();
+            return response()->json([
+                'html' => view('admin.laporan.partials.list', compact('penjualan'))->render(),
+                'totalProfit' => 'Rp ' . number_format($totalKeuntunganHarian)
+            ]);
         }
 
         return view('admin.laporan.index', compact(

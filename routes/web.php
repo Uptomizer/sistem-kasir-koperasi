@@ -54,6 +54,9 @@ Route::middleware(['auth', 'role:admin'])
         Route::resource('/barang', BarangController::class)
             ->except(['show']);
 
+        Route::get('/barang/items', [BarangController::class, 'getItems'])
+            ->name('barang.items');
+
         Route::get('/barang/{barang}/stok', [BarangController::class, 'stok'])
             ->name('barang.stok');
 
@@ -79,6 +82,9 @@ Route::middleware(['auth', 'role:kasir'])
 
         Route::get('/dashboard', [KasirDashboardController::class, 'index'])
             ->name('dashboard');
+
+        Route::get('/items', [KasirDashboardController::class, 'getItems'])
+            ->name('items.search');
 
         Route::post('/transaksi', [KasirTransaksiController::class, 'store'])
             ->name('transaksi.store');

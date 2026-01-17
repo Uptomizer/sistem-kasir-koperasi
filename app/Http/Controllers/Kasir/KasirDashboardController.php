@@ -9,8 +9,37 @@ class KasirDashboardController extends Controller
 {
     public function index()
     {
-        $barang = Barang::orderBy('nama_barang')->get();
+        $kategori = \App\Models\Kategori::all();
+        
+        $query = Barang::with('kategori')->orderBy('nama_barang');
 
-        return view('kasir.dashboard', compact('barang'));
+        if (request('kategori')) {
+            $query->where('id_kategori', request('kategori'));
+        }
+
+        if (request('search')) {
+            $query->whereRaw('LOWER(nama_barang) LIKE ?', [strtolower(request('search')) . '%']);
+        }
+
+        $barang = $query->get();
+
+        return view('kasir.dashboard', compact('barang', 'kategori'));
+    }
+
+    public function getItems() 
+    {
+        $query = Barang::with('kategori')->orderBy('nama_barang');
+
+        if (request('kategori')) {
+            $query->where('id_kategori', request('kategori'));
+        }
+
+        if (request('search')) {
+            $query->whereRaw('LOWER(nama_barang) LIKE ?', [strtolower(request('search')) . '%']);
+        }
+
+        $barang = $query->get();
+
+        return view('kasir.partials.items_list', compact('barang'));
     }
 }
