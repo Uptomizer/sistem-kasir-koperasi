@@ -23,9 +23,9 @@
         
         {{-- Logo Section --}}
         <div class="h-16 flex items-center gap-3 px-6 border-b border-slate-700/50 bg-slate-900/50">
-            <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-600/20">
-                <span class="font-bold text-lg">K</span>
-            </div>
+            <img src="{{ asset('images/logo.png') }}" 
+                 alt="Logo" 
+                 class="w-14 h-14 rounded-lg object-contain p-1">
             <div class="font-bold text-lg tracking-tight">
                 Admin<span class="text-blue-400">Panel</span>
             </div>

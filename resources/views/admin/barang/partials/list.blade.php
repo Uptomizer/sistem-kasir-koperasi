@@ -24,11 +24,17 @@
     </td>
     <td class="px-6 py-4 text-center">
         <div class="flex items-center justify-center gap-2">
-            <a href="{{ route('admin.barang.edit', $row) }}"
+            <button type="button"
+               onclick="openEditBarangModal(this)"
+               data-action="{{ route('admin.barang.update', $row) }}"
+               data-nama="{{ $row->nama_barang }}"
+               data-kategori="{{ $row->id_kategori }}"
+               data-beli="{{ $row->harga_beli }}"
+               data-jual="{{ $row->harga_jual }}"
                class="text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 p-2 rounded-md transition-colors"
                title="Edit">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
-            </a>
+            </button>
 
             <button
                type="button"

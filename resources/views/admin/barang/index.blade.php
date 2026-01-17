@@ -79,6 +79,18 @@
 </div>
 
 <script>
+    function showLoading(btn, text) {
+        btn.disabled = true;
+        btn.innerHTML = `
+            <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            ${text}
+        `;
+        return true;
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         const searchInput = document.querySelector('input[name="search"]');
         const categoryInput = document.querySelector('select[name="kategori"]');
@@ -146,7 +158,7 @@
             </div>
 
             {{-- Body --}}
-            <form method="POST" action="{{ route('admin.barang.store') }}">
+            <form method="POST" action="{{ route('admin.barang.store') }}" onsubmit="showLoading(this.querySelector('button[type=submit]'), 'Simpan...')">
                 @csrf
 
                 <div class="p-6 space-y-4">
@@ -218,7 +230,7 @@
             <h3 class="text-xl font-bold text-slate-800 mb-2">Hapus Barang?</h3>
             <p class="text-slate-500 mb-6">Tindakan ini tidak dapat dibatalkan. Barang yang dihapus mungkin akan mempengaruhi laporan.</p>
 
-            <form id="deleteForm" method="POST" action="">
+            <form id="deleteForm" method="POST" action="" onsubmit="showLoading(this.querySelector('button[type=submit]'), 'Hapus...')">
                 @csrf
                 @method('DELETE')
                 <div class="flex gap-3 justify-center">
@@ -240,6 +252,80 @@
 
 </div>
 
+{{-- MODAL EDIT BARANG --}}
+<div id="editBarangModal"
+     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden">
+
+    <div class="flex items-center justify-center min-h-screen px-4">
+        <div
+            class="bg-white rounded-2xl shadow-xl w-full max-w-lg
+                   animate-modal-in">
+
+            {{-- Header --}}
+            <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
+                <h3 class="font-bold text-slate-800 text-lg">
+                    Edit Barang
+                </h3>
+                <button onclick="closeEditBarangModal()"
+                        class="text-slate-400 hover:text-slate-600 text-xl">
+                    &times;
+                </button>
+            </div>
+
+            {{-- Body --}}
+            <form id="editBarangForm" method="POST" action="" onsubmit="showLoading(this.querySelector('button[type=submit]'), 'Update...')">
+                @csrf
+                @method('PUT')
+
+                <div class="p-6 space-y-4">
+
+                    <input id="editNamaBarang" name="nama_barang" required
+                           placeholder="Nama Barang"
+                           class="w-full border border-slate-300 px-4 py-2 rounded-lg
+                                  focus:ring-2 focus:ring-blue-500 focus:outline-none">
+
+                    <select id="editIdKategori" name="id_kategori" required
+                            class="w-full border border-slate-300 px-4 py-2 rounded-lg
+                                   focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        <option value="">Pilih Kategori</option>
+                        @foreach ($kategori as $k)
+                            <option value="{{ $k->id_kategori }}">
+                                {{ $k->nama_kategori }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                    <input id="editHargaBeli" name="harga_beli" type="number" required
+                           placeholder="Harga Beli"
+                           class="w-full border border-slate-300 px-4 py-2 rounded-lg
+                                  focus:ring-2 focus:ring-blue-500 focus:outline-none">
+
+                    <input id="editHargaJual" name="harga_jual" type="number" required
+                           placeholder="Harga Jual"
+                           class="w-full border border-slate-300 px-4 py-2 rounded-lg
+                                  focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+
+                {{-- Footer --}}
+                <div class="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
+                    <button type="button"
+                            onclick="closeEditBarangModal()"
+                            class="px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-100">
+                        Batal
+                    </button>
+
+                    <button type="submit"
+                            class="bg-indigo-600 text-white px-5 py-2 rounded-lg
+                                   hover:bg-indigo-700 transition font-medium">
+                        Update
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
 {{-- MODAL STOK --}}
 <div id="stokModal"
      class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden">
@@ -253,7 +339,7 @@
             </div>
 
             {{-- Body --}}
-            <form id="stokForm" method="POST" action="">
+            <form id="stokForm" method="POST" action="" onsubmit="showLoading(this.querySelector('button[type=submit]'), 'Simpan...')">
                 @csrf
                 @method('PUT')
 
@@ -312,6 +398,28 @@ function openStokModal(btn) {
     setTimeout(() => document.getElementById('stokInput').focus(), 100)
 }
 
+// EDIT MODAL FUNCTIONS
+function openEditBarangModal(btn) {
+    const action = btn.dataset.action
+    const nama = btn.dataset.nama
+    const kategori = btn.dataset.kategori
+    const beli = btn.dataset.beli
+    const jual = btn.dataset.jual
+
+    document.getElementById('editBarangForm').action = action
+    document.getElementById('editNamaBarang').value = nama
+    document.getElementById('editIdKategori').value = kategori
+    document.getElementById('editHargaBeli').value = beli
+    document.getElementById('editHargaJual').value = jual
+
+    document.getElementById('editBarangModal').classList.remove('hidden')
+    setTimeout(() => document.getElementById('editNamaBarang').focus(), 100)
+}
+
+function closeEditBarangModal() {
+    document.getElementById('editBarangModal').classList.add('hidden')
+}
+
 function closeStokModal() {
     document.getElementById('stokModal').classList.add('hidden')
 }
@@ -322,6 +430,7 @@ document.addEventListener('keydown', e => {
         closeBarangModal()
         closeDeleteModal()
         closeStokModal()
+        closeEditBarangModal()
     }
 })
 

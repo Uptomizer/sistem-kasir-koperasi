@@ -131,16 +131,17 @@
 
         // Handle Pagination Links
         listContainer.addEventListener('click', function(e) {
-            const link = e.target.closest('.pagination a');
+            const link = e.target.closest('.pagination-links a, nav[role="navigation"] a');
             
             if (link) {
                 e.preventDefault();
                 const url = link.getAttribute('href');
                 
-                // Update URL Browser
-                window.history.pushState(null, '', url);
-
-                fetchData(url);
+                if(url) {
+                    // Update URL Browser
+                    window.history.pushState(null, '', url);
+                    fetchData(url);
+                }
             }
         });
 

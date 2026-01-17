@@ -81,6 +81,6 @@
 @endforelse
 
 {{-- PAGINATION --}}
-<div class="mt-8">
+<div class="mt-8 pagination-links">
     {{ $penjualan->links() }}
 </div>
