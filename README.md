@@ -25,8 +25,8 @@ dan pembuatan laporan penjualan secara efisien.
 
 ## ⚙️ Instalasi
 ```bash
-git clone https://github.com/USERNAME/kasir-koperasi-smk.git
-cd kasir-koperasi-smk
+git clone https://github.com/Uptomizer/sistem-kasir-koperasi.git
+cd koperasi-kasir
 composer install
 npm install
 cp .env.example .env
