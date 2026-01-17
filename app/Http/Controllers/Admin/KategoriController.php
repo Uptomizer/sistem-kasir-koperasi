@@ -52,11 +52,14 @@ class KategoriController extends Controller
 
     public function destroy(Kategori $kategori)
     {
+        // Delete all associated barang items first (Manual Cascade)
+        $kategori->barang()->delete();
+        
         $kategori->delete();
 
         return redirect()
             ->route('admin.kategori.index')
-            ->with('success', 'Kategori berhasil dihapus');
+            ->with('success', 'Kategori dan semua barang di dalamnya berhasil dihapus');
     }
 }
 

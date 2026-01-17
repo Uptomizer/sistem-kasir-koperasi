@@ -22,10 +22,10 @@
     <aside class="fixed inset-y-0 left-0 w-64 bg-green-900 text-white z-50 shadow-2xl transition-transform duration-300 ease-in-out">
         
         {{-- Logo Section --}}
-        <div class="h-16 flex items-center gap-3 px-6 border-b border-green-800 bg-green-900">
-            <div class="w-8 h-8 rounded-lg bg-green-500 flex items-center justify-center shadow-lg shadow-green-500/20">
-                <span class="font-bold text-lg text-white">K</span>
-            </div>
+        <div class="h-16 flex items-center gap-3 px-6 border-b border-slate-700/50 bg-slate-900/50">
+            <img src="{{ asset('images/logo.png') }}" 
+                 alt="Logo" 
+                 class="w-14 h-14 rounded-lg object-contain p-1">
             <div class="font-bold text-lg tracking-tight">
                 Koperasi<span class="text-green-400">Kasir</span>
             </div>
