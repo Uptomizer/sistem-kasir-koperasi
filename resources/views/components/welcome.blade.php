@@ -1,4 +1,5 @@
 @if (session('welcome'))
+<div class="no-select">
 <div id="welcomeSplash"
      class="fixed inset-0 bg-white z-[9999]
             flex items-center justify-center">
@@ -9,7 +10,7 @@
         {{ session('welcome') }}
     </h1>
 </div>
-
+</div>
 <style>
 @keyframes welcomeIn {
     from {

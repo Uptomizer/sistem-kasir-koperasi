@@ -80,6 +80,9 @@ Route::middleware(['auth', 'role:kasir'])
         Route::get('/dashboard', [KasirDashboardController::class, 'index'])
             ->name('dashboard');
 
+        Route::get('/items', [KasirDashboardController::class, 'getItems'])
+            ->name('items.search');
+
         Route::post('/transaksi', [KasirTransaksiController::class, 'store'])
             ->name('transaksi.store');
     });

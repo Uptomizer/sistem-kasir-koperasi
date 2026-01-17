@@ -32,9 +32,9 @@
     @endif
 
     <div class="p-6">
-        <div class="overflow-x-auto rounded-lg border border-slate-200">
+        <div class="overflow-x-auto overflow-y-auto max-h-[450px] rounded-lg border border-slate-200">
             <table class="w-full text-sm text-left">
-                <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200 uppercase tracking-wider text-xs">
+                <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200 uppercase tracking-wider text-xs sticky top-0 z-10 shadow-sm">
                     <tr>
                         <th class="px-6 py-4">Barang</th>
                         <th class="px-6 py-4">Kategori</th>

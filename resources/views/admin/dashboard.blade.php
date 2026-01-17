@@ -77,9 +77,6 @@
 <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
     <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
         <h2 class="font-bold text-slate-800 text-lg">Laporan Penjualan Teratas</h2>
-        <button class="text-xs font-medium text-blue-600 hover:text-blue-800 hover:underline">
-            Lihat Semua
-        </button>
     </div>
 
     <div class="overflow-x-auto">
