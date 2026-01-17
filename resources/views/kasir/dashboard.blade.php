@@ -4,7 +4,7 @@
 @section('page-title', 'Transaksi Kasir')
 
 @section('content')
-
+<div class="no-select">
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
     {{-- DAFTAR BARANG --}}
@@ -101,7 +101,8 @@
                 <input type="hidden" name="items" id="itemsInput">
 
                 <button
-                    type="submit"
+                    type="button"
+                    onclick="openPaymentModal()"
                     id="btnSubmit"
                     class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold shadow-lg shadow-blue-600/20 hover:bg-blue-700 hover:shadow-blue-700/30 transition-all active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
                     disabled>
@@ -116,10 +117,51 @@
 
 </div>
 
+{{-- PAYMENT MODAL --}}
+<div id="paymentModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center px-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md animate-modal-in overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+            <h3 class="font-bold text-lg text-slate-800">Pembayaran & Kembalian</h3>
+            <button onclick="closePaymentModal()" class="text-slate-400 hover:text-slate-600 text-2xl">&times;</button>
+        </div>
+        
+        <div class="p-6 space-y-6">
+            <div>
+                <label class="block text-sm font-medium text-slate-500 mb-1">Total Tagihan</label>
+                <div class="text-3xl font-bold text-slate-800 font-mono" id="modalTotal">Rp 0</div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-2">Uang Diterima (Rp)</label>
+                <input type="number" id="uangDiterima" 
+                       class="w-full text-lg font-mono border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:outline-none" 
+                       placeholder="0">
+            </div>
+
+            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                <div class="flex justify-between items-center">
+                    <span class="text-slate-600 font-medium">Kembalian</span>
+                    <span id="kembalian" class="font-bold text-xl text-slate-400 font-mono">Rp 0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="px-6 py-4 bg-slate-50 border-t border-slate-200 flex gap-3">
+            <button onclick="closePaymentModal()" class="flex-1 px-4 py-2 text-slate-600 hover:bg-slate-200 rounded-lg font-medium transition">
+                Batal
+            </button>
+            <button onclick="submitTransaction()" id="btnConfirmPay" disabled class="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-green-700 shadow-lg shadow-green-600/20 disabled:opacity-50 disabled:cursor-not-allowed transition">
+                Konfirmasi Bayar
+            </button>
+        </div>
+    </div>
+</div>
+
 {{-- ================= JS KASIR (FINAL) ================= --}}
 <script>
 // JS Logic
 let cart = {}
+let totalAmount = 0
 
 const cartDiv    = document.getElementById('cart')
 const totalEl    = document.getElementById('total')
@@ -129,6 +171,13 @@ const errorText  = errorMsg.querySelector('.msg-text')
 const btnSubmit  = document.getElementById('btnSubmit')
 const form       = document.getElementById('formTransaksi')
 const itemsTable = document.getElementById('itemsTableBody')
+
+// Payment Modal Elements
+const paymentModal = document.getElementById('paymentModal')
+const modalTotalEl = document.getElementById('modalTotal')
+const uangDiterimaEl = document.getElementById('uangDiterima')
+const kembalianEl   = document.getElementById('kembalian')
+const btnConfirmPay = document.getElementById('btnConfirmPay')
 
 // AJAX Search & Filter
 const searchInput   = document.querySelector('input[name="search"]')
@@ -240,7 +289,7 @@ reattachAddItemListeners()
 // Render keranjang
 function renderCart() {
     cartDiv.innerHTML = ''
-    let total = 0
+    totalAmount = 0
     const cartKeys = Object.keys(cart)
 
     if (cartKeys.length === 0) {
@@ -261,7 +310,7 @@ function renderCart() {
     cartKeys.forEach((id) => {
         const item = cart[id]
         const subtotal = item.harga * item.qty
-        total += subtotal
+        totalAmount += subtotal
 
         cartDiv.innerHTML += `
         <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
@@ -297,7 +346,7 @@ function renderCart() {
         </div>`
     })
 
-    totalEl.textContent = 'Rp ' + total.toLocaleString()
+    totalEl.textContent = 'Rp ' + totalAmount.toLocaleString()
     itemsInput.value = JSON.stringify(cart)
     btnSubmit.disabled = false
 }
@@ -328,6 +377,78 @@ function removeItem(id) {
     renderCart()
 }
 
+// === PAYMENT MODAL LOGIC ===
+function openPaymentModal() {
+    if(totalAmount <= 0) return
+    
+    modalTotalEl.innerText = 'Rp ' + totalAmount.toLocaleString()
+    uangDiterimaEl.value = ''
+    resetKembalian()
+    
+    paymentModal.classList.remove('hidden')
+    setTimeout(() => uangDiterimaEl.focus(), 100)
+}
+
+function closePaymentModal() {
+    paymentModal.classList.add('hidden')
+}
+
+// Hitung Kembalian
+uangDiterimaEl.addEventListener('input', (e) => {
+    const uang = parseInt(e.target.value) || 0
+    const kembalian = uang - totalAmount
+    
+    if(uang >= totalAmount) {
+        kembalianEl.innerText = 'Rp ' + kembalian.toLocaleString()
+        kembalianEl.classList.remove('text-red-500', 'text-slate-400')
+        kembalianEl.classList.add('text-green-600')
+        btnConfirmPay.disabled = false
+    } else {
+        // Jika kurang bayar
+        const kurang = totalAmount - uang
+        kembalianEl.innerText = '- Rp ' + kurang.toLocaleString()
+        kembalianEl.classList.remove('text-green-600', 'text-slate-400')
+        kembalianEl.classList.add('text-red-500')
+        btnConfirmPay.disabled = true
+    }
+    
+    if(e.target.value === '') resetKembalian()
+})
+
+function resetKembalian() {
+    kembalianEl.innerText = 'Rp 0'
+    kembalianEl.classList.remove('text-green-600', 'text-red-500')
+    kembalianEl.classList.add('text-slate-400')
+    btnConfirmPay.disabled = true
+}
+
+// Enter shortcut di input uang
+uangDiterimaEl.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter' && !btnConfirmPay.disabled) {
+        submitTransaction()
+    }
+})
+
+// Submit Transaksi Final
+function submitTransaction() {
+    // Show Loading on Button
+    btnConfirmPay.disabled = true
+    btnConfirmPay.innerHTML = `
+        <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        Memproses...
+    `
+    
+    form.submit()
+}
+
+// Tutup modal dengan ESC
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closePaymentModal()
+})
+
 // Validasi sebelum submit
 form.addEventListener('submit', e => {
     if (Object.keys(cart).length === 0) {
@@ -352,3 +473,43 @@ form.addEventListener('submit', e => {
 })
 </script>
 @endsection
+{{-- PAYMENT MODAL --}}
+<div id="paymentModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center px-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md animate-modal-in overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+            <h3 class="font-bold text-lg text-slate-800">Pembayaran & Kembalian</h3>
+            <button onclick="closePaymentModal()" class="text-slate-400 hover:text-slate-600 text-2xl">&times;</button>
+        </div>
+        
+        <div class="p-6 space-y-6">
+            <div>
+                <label class="block text-sm font-medium text-slate-500 mb-1">Total Tagihan</label>
+                <div class="text-3xl font-bold text-slate-800 font-mono" id="modalTotal">Rp 0</div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-2">Uang Diterima (Rp)</label>
+                <input type="number" id="uangDiterima" 
+                       class="w-full text-lg font-mono border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:outline-none" 
+                       placeholder="0">
+            </div>
+
+            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                <div class="flex justify-between items-center">
+                    <span class="text-slate-600 font-medium">Kembalian</span>
+                    <span id="kembalian" class="font-bold text-xl text-slate-400 font-mono">Rp 0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="px-6 py-4 bg-slate-50 border-t border-slate-200 flex gap-3">
+            <button onclick="closePaymentModal()" class="flex-1 px-4 py-2 text-slate-600 hover:bg-slate-200 rounded-lg font-medium transition">
+                Batal
+            </button>
+            <button onclick="submitTransaction()" id="btnConfirmPay" disabled class="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-green-700 shadow-lg shadow-green-600/20 disabled:opacity-50 disabled:cursor-not-allowed transition">
+                Konfirmasi Bayar
+            </button>
+        </div>
+    </div>
+</div>
+</div>

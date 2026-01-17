@@ -7,7 +7,7 @@
 
 {{-- FILTER SECTION --}}
 <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6 mb-8">
-    <form method="GET" action="{{ route('admin.laporan.index') }}" class="flex flex-col md:flex-row md:items-end gap-4">
+    <form id="filter-form" method="GET" action="{{ route('admin.laporan.index') }}" class="flex flex-col md:flex-row md:items-end gap-4">
         
         <div class="flex-1 max-w-xs">
             <label class="block text-sm font-medium text-slate-700 mb-2">Filter Tanggal</label>
@@ -57,7 +57,7 @@
     </div>
     <div>
         <div class="text-sm font-medium text-emerald-800 uppercase tracking-wider">Total Keuntungan ({{ request('tanggal') ? \Carbon\Carbon::parse(request('tanggal'))->translatedFormat('d F Y') : 'Semua Data' }})</div>
-        <div class="text-3xl font-bold text-emerald-600 mt-1">
+        <div id="total-profit-amount" class="text-3xl font-bold text-emerald-600 mt-1">
             Rp {{ number_format($totalKeuntunganHarian) }}
         </div>
     </div>
@@ -75,42 +75,78 @@
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const listContainer = document.getElementById('laporan-list');
+        const profitAmount  = document.getElementById('total-profit-amount');
+        const filterForm    = document.getElementById('filter-form');
 
+        // Function to fetchData
+        function fetchData(url) {
+            // Visual loading state
+            listContainer.style.opacity = '0.5';
+            listContainer.style.pointerEvents = 'none';
+
+            fetch(url, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Update List
+                listContainer.innerHTML = data.html;
+                
+                // Update Total Profit if element exists
+                if(profitAmount && data.totalProfit) {
+                    profitAmount.textContent = data.totalProfit;
+                }
+
+                // Restore State
+                listContainer.style.opacity = '1';
+                listContainer.style.pointerEvents = 'auto';
+
+                // Scroll to top of list
+                listContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                listContainer.style.opacity = '1';
+                listContainer.style.pointerEvents = 'auto';
+            });
+        }
+
+        // Handle Form Filter
+        if(filterForm) {
+            filterForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+                const queryParams = new URLSearchParams(formData).toString();
+                const url = `${this.action}?${queryParams}`;
+
+                // Update URL Browser without reload
+                window.history.pushState(null, '', url);
+                
+                fetchData(url);
+            });
+        }
+
+        // Handle Pagination Links
         listContainer.addEventListener('click', function(e) {
-            // Cek apakah yang diklik adalah link pagination atau child dari link pagination
             const link = e.target.closest('.pagination a');
             
             if (link) {
                 e.preventDefault();
-                
                 const url = link.getAttribute('href');
                 
-                // Tambahkan loading state visual (opsional)
-                listContainer.style.opacity = '0.5';
-                listContainer.style.pointerEvents = 'none';
+                // Update URL Browser
+                window.history.pushState(null, '', url);
 
-                fetch(url, {
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(response => response.text())
-                .then(html => {
-                    listContainer.innerHTML = html;
-                    
-                    // Kembalikan state visual
-                    listContainer.style.opacity = '1';
-                    listContainer.style.pointerEvents = 'auto';
-
-                    // Scroll ke atas list (opsional, agar UX lebih nyaman)
-                    listContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                })
-                .catch(error => {
-                    console.error('Error fetching data:', error);
-                    listContainer.style.opacity = '1';
-                    listContainer.style.pointerEvents = 'auto';
-                });
+                fetchData(url);
             }
+        });
+
+        // Handle Browser Back/Forward buttons
+        window.addEventListener('popstate', function() {
+            fetchData(window.location.href);
         });
     });
 </script>

@@ -54,6 +54,9 @@ Route::middleware(['auth', 'role:admin'])
         Route::resource('/barang', BarangController::class)
             ->except(['show']);
 
+        Route::get('/barang/items', [BarangController::class, 'getItems'])
+            ->name('barang.items');
+
         Route::get('/barang/{barang}/stok', [BarangController::class, 'stok'])
             ->name('barang.stok');
 
