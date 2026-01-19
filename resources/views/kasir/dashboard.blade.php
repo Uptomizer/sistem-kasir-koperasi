@@ -118,6 +118,7 @@
 </div>
 
 {{-- PAYMENT MODAL --}}
+<div class="no-select">
 <div id="paymentModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center px-4">
     <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md animate-modal-in overflow-hidden">
         <div class="px-6 py-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
@@ -156,7 +157,7 @@
         </div>
     </div>
 </div>
-
+</div>
 {{-- ================= JS KASIR (FINAL) ================= --}}
 <script>
 // JS Logic
@@ -474,6 +475,7 @@ form.addEventListener('submit', e => {
 </script>
 @endsection
 {{-- PAYMENT MODAL --}}
+<div class="no-select">
 <div id="paymentModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center px-4">
     <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md animate-modal-in overflow-hidden">
         <div class="px-6 py-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
@@ -511,5 +513,6 @@ form.addEventListener('submit', e => {
             </button>
         </div>
     </div>
+</div>
 </div>
 </div>
