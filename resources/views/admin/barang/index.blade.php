@@ -34,6 +34,16 @@
             </div>
 
             <button
+                onclick="window.fetchItems ? window.fetchItems(true) : location.reload()"
+                class="bg-white border border-slate-300 text-slate-600 px-3 py-2 rounded-lg font-medium text-sm
+                       hover:bg-slate-50 hover:text-blue-600 transition-colors flex items-center gap-2 whitespace-nowrap group"
+                       title="Refresh Data">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform group-hover:rotate-180 duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+            </button>
+
+            <button
                 onclick="openBarangModal()"
                 class="bg-blue-600 text-white px-5 py-2 rounded-lg font-medium text-sm
                        shadow-lg shadow-blue-600/20 hover:bg-blue-700 hover:shadow-blue-700/30
@@ -96,24 +106,39 @@
         const categoryInput = document.querySelector('select[name="kategori"]');
         const itemsTable = document.getElementById('itemsTableBody');
 
-        function fetchItems() {
+        function fetchItems(animate = true) {
             const search = searchInput.value;
             const category = categoryInput.value;
             
-            // Loading state
-            itemsTable.style.opacity = '0.5';
+            // Loading state ONLY if animate is true
+            if (animate) {
+                itemsTable.style.opacity = '0.5';
+            }
 
             fetch(`{{ route('admin.barang.items') }}?search=${search}&kategori=${category}`)
                 .then(response => response.text())
                 .then(html => {
                     itemsTable.innerHTML = html;
-                    itemsTable.style.opacity = '1';
+                    
+                    if (animate) {
+                        itemsTable.style.opacity = '1';
+                    }
                 })
                 .catch(err => {
                     console.error('Error fetching items:', err);
-                    itemsTable.style.opacity = '1';
+                    if (animate) {
+                        itemsTable.style.opacity = '1';
+                    }
                 });
         }
+        
+        // Expose to global
+        window.fetchItems = fetchItems;
+
+        // Auto Refresh every 45 seconds (45000ms) - Silent (no animation)
+        setInterval(() => {
+            fetchItems(false);
+        }, 45000);
 
         // Debounce helper
         function debounce(func, timeout = 300){
@@ -278,32 +303,45 @@
                 @method('PUT')
 
                 <div class="p-6 space-y-4">
+                    <div>
+                        <label class="text-sm font-medium text-slate-700 mb-1 block">Nama Barang</label>
+                        <input id="editNamaBarang" name="nama_barang" required
+                               placeholder="Nama Barang"
+                               class="w-full border border-slate-300 px-4 py-2 rounded-lg
+                                      focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    </div>
 
-                    <input id="editNamaBarang" name="nama_barang" required
-                           placeholder="Nama Barang"
-                           class="w-full border border-slate-300 px-4 py-2 rounded-lg
-                                  focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <div>
+                        <label class="text-sm font-medium text-slate-700 mb-1 block">Kategori</label>
+                        <select id="editIdKategori" name="id_kategori" required
+                                class="w-full border border-slate-300 px-4 py-2 rounded-lg
+                                       focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            <option value="">Pilih Kategori</option>
+                            @foreach ($kategori as $k)
+                                <option value="{{ $k->id_kategori }}">
+                                    {{ $k->nama_kategori }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
 
-                    <select id="editIdKategori" name="id_kategori" required
-                            class="w-full border border-slate-300 px-4 py-2 rounded-lg
-                                   focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                        <option value="">Pilih Kategori</option>
-                        @foreach ($kategori as $k)
-                            <option value="{{ $k->id_kategori }}">
-                                {{ $k->nama_kategori }}
-                            </option>
-                        @endforeach
-                    </select>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-sm font-medium text-slate-700 mb-1 block">Harga Beli</label>
+                            <input id="editHargaBeli" name="harga_beli" type="number" required
+                                   placeholder="0"
+                                   class="w-full border border-slate-300 px-4 py-2 rounded-lg
+                                          focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        </div>
 
-                    <input id="editHargaBeli" name="harga_beli" type="number" required
-                           placeholder="Harga Beli"
-                           class="w-full border border-slate-300 px-4 py-2 rounded-lg
-                                  focus:ring-2 focus:ring-blue-500 focus:outline-none">
-
-                    <input id="editHargaJual" name="harga_jual" type="number" required
-                           placeholder="Harga Jual"
-                           class="w-full border border-slate-300 px-4 py-2 rounded-lg
-                                  focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        <div>
+                            <label class="text-sm font-medium text-slate-700 mb-1 block">Harga Jual</label>
+                            <input id="editHargaJual" name="harga_jual" type="number" required
+                                   placeholder="0"
+                                   class="w-full border border-slate-300 px-4 py-2 rounded-lg
+                                          focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        </div>
+                    </div>
                 </div>
 
                 {{-- Footer --}}

@@ -48,11 +48,28 @@ Route::middleware(['auth', 'role:admin'])
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])
             ->name('dashboard');
 
+        Route::get('/chart-data', [AdminDashboardController::class, 'getChartData'])
+            ->name('chart.data');
+
+        Route::get('/history', [AdminDashboardController::class, 'getHistory'])
+            ->name('history.data');
+
+        Route::get('/transaksi/{id}', [AdminDashboardController::class, 'getTransactionDetail'])
+            ->name('transaksi.detail');
+
+        Route::get('/dashboard/stats', [AdminDashboardController::class, 'getStats'])
+            ->name('dashboard.stats');
+    
+        // Resource Routes
+
         Route::resource('/kategori', KategoriController::class)
             ->except(['show']);
 
         Route::resource('/barang', BarangController::class)
             ->except(['show']);
+
+        Route::resource('/kasir', \App\Http\Controllers\Admin\AdminKasirController::class)
+            ->except(['create', 'edit', 'show']);
 
         Route::get('/barang/items', [BarangController::class, 'getItems'])
             ->name('barang.items');

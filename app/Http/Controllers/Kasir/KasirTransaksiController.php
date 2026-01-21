@@ -19,7 +19,7 @@ class KasirTransaksiController extends Controller
         return back()->withErrors('Keranjang kosong atau data tidak valid');
     }
 
-    DB::transaction(function () use ($items) {
+    DB::transaction(function () use ($items, $request) {
 
         $penjualan = Penjualan::create([
             'tanggal' => now(),
@@ -50,7 +50,18 @@ class KasirTransaksiController extends Controller
             $total += $subtotal;
         }
 
-        $penjualan->update(['total' => $total]);
+        // Calculate Payment & Change
+        $bayar = $request->input('bayar', 0);
+        $kembali = $bayar - $total;
+
+        // Ensure we don't save negative change if logic bypassed (optional safety)
+        if ($kembali < 0) $kembali = 0; 
+
+        $penjualan->update([
+            'total'   => $total,
+            'bayar'   => $bayar,
+            'kembali' => $kembali
+        ]);
     });
 
     return redirect()

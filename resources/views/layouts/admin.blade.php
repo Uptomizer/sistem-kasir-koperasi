@@ -65,6 +65,8 @@
                 <span class="font-medium">Barang</span>
             </a>
 
+
+
             <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 mt-6 px-2">
                 Laporan & Lainnya
             </div>
@@ -76,6 +78,15 @@
                    : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
                 <span class="text-xl">📑</span>
                 <span class="font-medium">Laporan</span>
+            </a>
+
+            <a href="{{ route('admin.kasir.index') }}"
+               class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200
+               {{ request()->routeIs('admin.kasir.*') 
+                   ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/20' 
+                   : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                <span class="text-xl">👥</span>
+                <span class="font-medium">Akun Kasir</span>
             </a>
 
         </nav>

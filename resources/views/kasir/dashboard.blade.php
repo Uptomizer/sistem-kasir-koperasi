@@ -38,6 +38,16 @@
 
                     <button type="submit" class="hidden">Cari</button>
                 </form>
+
+                <button
+                    onclick="window.fetchItems ? window.fetchItems(true) : location.reload()"
+                    class="bg-white border border-slate-300 text-slate-600 px-3 py-1.5 rounded-lg font-medium text-sm
+                           hover:bg-slate-50 hover:text-blue-600 transition-colors flex items-center gap-2 whitespace-nowrap group"
+                    title="Refresh Stok">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform group-hover:rotate-180 duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                </button>
             </div>
 
             <div class="text-sm text-slate-500 whitespace-nowrap">
@@ -181,28 +191,46 @@ const kembalianEl   = document.getElementById('kembalian')
 const btnConfirmPay = document.getElementById('btnConfirmPay')
 
 // AJAX Search & Filter
+// AJAX Search & Filter
 const searchInput   = document.querySelector('input[name="search"]')
 const categoryInput = document.querySelector('select[name="kategori"]')
 
-function fetchItems() {
+function fetchItems(animate = true) {
     const search = searchInput.value
     const category = categoryInput.value
     
-    // Show loading state (optional)
-    itemsTable.style.opacity = '0.5'
+    // Show loading state ONLY if animate is true (manual refresh)
+    if (animate) {
+        itemsTable.style.opacity = '0.5'
+    }
 
     fetch(`{{ route('kasir.items.search') }}?search=${search}&kategori=${category}`)
         .then(response => response.text())
         .then(html => {
+            // Only update if content changed or just force update
+            // For simplicity, we just update. Silent update won't flicker because we don't change opacity
             itemsTable.innerHTML = html
-            itemsTable.style.opacity = '1'
+            
+            if (animate) {
+                itemsTable.style.opacity = '1'
+            }
             reattachAddItemListeners()
         })
         .catch(err => {
             console.error('Error fetching items:', err)
-            itemsTable.style.opacity = '1'
+            if (animate) {
+                itemsTable.style.opacity = '1'
+            }
         })
 }
+
+// Expose to global for refresh button (Manual refresh uses animation)
+window.fetchItems = fetchItems;
+
+// Auto Refresh every 45 seconds (45000ms) - Silent (no animation)
+setInterval(() => {
+    fetchItems(false);
+}, 45000);
 
 // Debounce helper
 function debounce(func, timeout = 300){
@@ -328,7 +356,12 @@ function renderCart() {
                             onclick="changeQty('${id}', -1)"
                             class="px-2 py-1 text-slate-600 hover:bg-slate-200 hover:text-slate-900 transition-colors text-sm border-r border-slate-200 font-medium">−</button>
                     
-                    <span class="px-2 py-1 text-xs font-semibold text-slate-700 min-w-[1.5rem] text-center bg-white">${item.qty}</span>
+                    <input type="number" 
+                           value="${item.qty}" 
+                           onchange="updateQty('${id}', this.value)"
+                           class="w-14 text-center text-xs font-semibold text-slate-700 border-none bg-white focus:ring-0 outline-none p-1 m-0 appearance-none"
+                           min="1" 
+                           max="${item.stok}">
 
                     <button type="button"
                             onclick="changeQty('${id}', 1)"
@@ -352,6 +385,35 @@ function renderCart() {
     btnSubmit.disabled = false
 }
 
+// Update jumlah via input
+function updateQty(id, value) {
+    if (!cart[id]) return
+
+    let newQty = parseInt(value)
+
+    // Jika 0, hapus item
+    if (newQty === 0) {
+        removeItem(id)
+        return
+    }
+    
+    // Validasi input
+    if (isNaN(newQty) || newQty < 0) {
+        showError('Jumlah tidak valid')
+        renderCart() // Reset UI ke nilai sebelumnya
+        return
+    }
+
+    // Validasi stok
+    if (newQty > cart[id].stok) {
+        showError('Stok barang hanya tersedia ' + cart[id].stok)
+        newQty = cart[id].stok
+    }
+
+    cart[id].qty = newQty
+    renderCart()
+}
+
 // Ubah jumlah
 function changeQty(id, delta) {
     if (!cart[id]) return
@@ -359,7 +421,7 @@ function changeQty(id, delta) {
     const newQty = cart[id].qty + delta
 
     if (newQty < 1) {
-        showError('Jumlah minimal 1')
+        removeItem(id)
         return
     }
 
@@ -442,6 +504,18 @@ function submitTransaction() {
         Memproses...
     `
     
+    // Append Bayar Field
+    const bayarVal = document.getElementById('uangDiterima').value || 0
+    let hiddenBayar = document.getElementById('inputBayarHidden')
+    if(!hiddenBayar) {
+        hiddenBayar = document.createElement('input')
+        hiddenBayar.type = 'hidden'
+        hiddenBayar.name = 'bayar'
+        hiddenBayar.id = 'inputBayarHidden'
+        form.appendChild(hiddenBayar)
+    }
+    hiddenBayar.value = bayarVal
+
     form.submit()
 }
 
