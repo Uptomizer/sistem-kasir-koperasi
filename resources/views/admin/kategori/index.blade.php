@@ -21,16 +21,16 @@
 
     </div>
 
-    @if (session('success'))
-        <div class="px-6 pt-6">
-            <div class="bg-emerald-50 text-emerald-700 p-4 rounded-lg flex items-center gap-3 border border-emerald-100">
+    <div id="alert-container" class="px-6 pt-6 {{ session('success') ? '' : 'hidden' }}">
+        @if (session('success'))
+            <div class="bg-emerald-50 text-emerald-700 p-4 rounded-lg flex items-center gap-3 border border-emerald-100 alert-content">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                 </svg>
-                {{ session('success') }}
+                <span>{{ session('success') }}</span>
             </div>
-        </div>
-    @endif
+        @endif
+    </div>
 
     <div class="p-6">
         <div class="overflow-x-auto rounded-lg border border-slate-200">
@@ -41,42 +41,9 @@
                         <th class="px-6 py-4 text-center w-48">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-100 bg-white">
-                    @forelse ($kategori as $row)
-                        <tr class="hover:bg-slate-50/80 transition-colors">
-                            <td class="px-6 py-4 font-medium text-slate-800">
-                                {{ $row->nama_kategori }}
-                            </td>
-                            <td class="px-6 py-4 text-center">
-                                <div class="flex items-center justify-center gap-2">
-                                    <button 
-                                       type="button"
-                                       onclick="openEditKategoriModal(this)"
-                                       data-action="{{ route('admin.kategori.update', $row) }}"
-                                       data-name="{{ $row->nama_kategori }}"
-                                       class="text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 p-2 rounded-md transition-colors"
-                                       title="Edit">
-                                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
-                                    </button>
-
-                                    <button
-                                        type="button"
-                                        onclick="openDeleteModal('{{ route('admin.kategori.destroy', $row) }}')"
-                                        class="text-red-600 hover:text-red-800 bg-red-50 hover:bg-red-100 p-2 rounded-md transition-colors"
-                                        title="Hapus">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="2" class="text-center py-12 text-slate-500">
-                                <span class="block mb-2 text-2xl opacity-40">🏷️</span>
-                                Belum ada kategori
-                            </td>
-                        </tr>
-                    @endforelse
+                <tbody class="divide-y divide-slate-100 bg-white" id="categoryTableBody">
+                    @include('admin.kategori.partials.list', ['kategori' => $kategori])
+                </tbody>
                 </tbody>
             </table>
         </div>
@@ -105,7 +72,7 @@
             </div>
 
             {{-- Form --}}
-            <form method="POST" action="{{ route('admin.kategori.store') }}" onsubmit="showLoading(this.querySelector('button[type=submit]'), 'Simpan...')">
+            <form id="kategoriForm" method="POST" action="{{ route('admin.kategori.store') }}">
                 @csrf
 
                 <div class="p-6 space-y-4">
@@ -158,7 +125,7 @@
             </div>
 
             {{-- Form --}}
-            <form id="editKategoriForm" method="POST" action="" onsubmit="showLoading(this.querySelector('button[type=submit]'), 'Update...')">
+            <form id="editKategoriForm" method="POST" action="">
                 @csrf
                 @method('PUT')
 
@@ -207,7 +174,7 @@
             <h3 class="text-xl font-bold text-slate-800 mb-2">Hapus Kategori?</h3>
             <p class="text-slate-500 mb-6">Tindakan ini tidak dapat dibatalkan. Kategori yang dihapus akan hilang dari sistem.</p>
 
-            <form id="deleteForm" method="POST" action="" onsubmit="showLoading(this.querySelector('button[type=submit]'), 'Hapus...')">
+            <form id="deleteForm" method="POST" action="">
                 @csrf
                 @method('DELETE')
                 <div class="flex gap-3 justify-center">
@@ -228,59 +195,153 @@
 </div>
 
 <script>
-function openKategoriModal() {
-    document.getElementById('kategoriModal').classList.remove('hidden')
-}
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- ALERT SYSTEM ---
+        function showAlert(message) {
+            const container = document.getElementById('alert-container');
+            container.innerHTML = `
+                <div class="bg-emerald-50 text-emerald-700 p-4 rounded-lg flex items-center gap-3 border border-emerald-100 alert-content animate-fade-in-up">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                    <span>${message}</span>
+                </div>
+            `;
+            container.classList.remove('hidden');
+            
+            setTimeout(() => {
+                container.classList.add('hidden');
+            }, 3000);
+        }
 
-function closeKategoriModal() {
-    document.getElementById('kategoriModal').classList.add('hidden')
-}
+        // --- FETCH CATEGORIES ---
+        const tableBody = document.getElementById('categoryTableBody');
+        
+        function fetchCategories() {
+            tableBody.style.opacity = '0.5';
+            
+            fetch("{{ route('admin.kategori.list') }}")
+                .then(res => res.text())
+                .then(html => {
+                    tableBody.innerHTML = html;
+                    tableBody.style.opacity = '1';
+                })
+                .catch(err => {
+                    console.error(err);
+                    tableBody.style.opacity = '1';
+                });
+        }
+        
+        // Expose to global if needed
+        window.fetchCategories = fetchCategories;
 
-function openEditKategoriModal(btn) {
-    const action = btn.dataset.action
-    const name = btn.dataset.name
+        // --- AJAX HANDLER ---
+        function handleAjaxForm(formId, closeCallback) {
+            const form = document.getElementById(formId);
+            if(!form) return;
 
-    document.getElementById('editKategoriForm').action = action
-    document.getElementById('editNamaKategori').value = name
-    
-    document.getElementById('editKategoriModal').classList.remove('hidden')
-    setTimeout(() => document.getElementById('editNamaKategori').focus(), 100)
-}
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const btn = form.querySelector('button[type="submit"]');
+                const originalText = btn.innerHTML;
+                let loadingText = 'Memproses...';
+                if(formId === 'deleteForm') loadingText = 'Menghapus...';
+                
+                btn.disabled = true;
+                btn.innerHTML = `<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> ${loadingText}`;
 
-function closeEditKategoriModal() {
-    document.getElementById('editKategoriModal').classList.add('hidden')
-}
+                fetch(form.action, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(async res => {
+                    const contentType = res.headers.get('content-type');
+                    if (!contentType || !contentType.includes('application/json')) {
+                         throw new Error('Respons bukan JSON');
+                    }
+                    if (!res.ok) {
+                        const errData = await res.json();
+                        throw new Error(errData.message || 'Terjadi kesalahan');
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    if(data.message) {
+                        showAlert(data.message);
+                    } else {
+                        showAlert('Berhasil!');
+                    }
+                    
+                    fetchCategories();
+                    if(closeCallback) closeCallback();
+                    
+                    // Reset add form if successful
+                    if (formId === 'kategoriForm') form.reset();
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('Gagal: ' + err.message);
+                })
+                .finally(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                });
+            });
+        }
 
+        // Initialize Forms
+        handleAjaxForm('kategoriForm', closeKategoriModal);
+        handleAjaxForm('editKategoriForm', closeEditKategoriModal);
+        handleAjaxForm('deleteForm', closeDeleteModal);
+    });
 
-// Tutup modal dengan ESC
-document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') {
-        closeKategoriModal()
-        closeDeleteModal()
-        closeEditKategoriModal()
+    // --- MODAL FUNCTIONS (Global Scope) ---
+    function openKategoriModal() {
+        document.getElementById('kategoriModal').classList.remove('hidden')
+        setTimeout(() => document.querySelector('#kategoriModal input').focus(), 100)
     }
-})
 
-function showLoading(btn, text) {
-    btn.disabled = true;
-    btn.innerHTML = `
-        <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
-        ${text}
-    `;
-    return true;
-}
+    function closeKategoriModal() {
+        document.getElementById('kategoriModal').classList.add('hidden')
+    }
 
-function openDeleteModal(actionUrl) {
-    document.getElementById('deleteForm').action = actionUrl
-    document.getElementById('deleteModal').classList.remove('hidden')
-}
+    function openEditKategoriModal(btn) {
+        const action = btn.dataset.action
+        const name = btn.dataset.name
 
-function closeDeleteModal() {
-    document.getElementById('deleteModal').classList.add('hidden')
-}
+        document.getElementById('editKategoriForm').action = action
+        document.getElementById('editNamaKategori').value = name
+        
+        document.getElementById('editKategoriModal').classList.remove('hidden')
+        setTimeout(() => document.getElementById('editNamaKategori').focus(), 100)
+    }
+
+    function closeEditKategoriModal() {
+        document.getElementById('editKategoriModal').classList.add('hidden')
+    }
+
+    function openDeleteModal(actionUrl) {
+        document.getElementById('deleteForm').action = actionUrl
+        document.getElementById('deleteModal').classList.remove('hidden')
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').classList.add('hidden')
+    }
+    
+    // Key Listener
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+            closeKategoriModal()
+            closeDeleteModal()
+            closeEditKategoriModal()
+        }
+    })
 </script>
 <style>
 @keyframes modalIn {

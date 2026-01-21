@@ -27,6 +27,10 @@ class KategoriController extends Controller
 
         Kategori::create($request->only('nama_kategori'));
 
+        if ($request->wantsJson()) {
+            return response()->json(['message' => 'Kategori berhasil ditambahkan']);
+        }
+
         return redirect()
             ->route('admin.kategori.index')
             ->with('success', 'Kategori berhasil ditambahkan');
@@ -45,6 +49,10 @@ class KategoriController extends Controller
 
         $kategori->update($request->only('nama_kategori'));
 
+        if ($request->wantsJson()) {
+            return response()->json(['message' => 'Kategori berhasil diperbarui']);
+        }
+
         return redirect()
             ->route('admin.kategori.index')
             ->with('success', 'Kategori berhasil diperbarui');
@@ -57,9 +65,19 @@ class KategoriController extends Controller
         
         $kategori->delete();
 
+        if (request()->wantsJson()) {
+            return response()->json(['message' => 'Kategori berhasil dihapus']);
+        }
+
         return redirect()
             ->route('admin.kategori.index')
             ->with('success', 'Kategori dan semua barang di dalamnya berhasil dihapus');
+    }
+
+    public function getList(Request $request)
+    {
+        $kategori = Kategori::orderBy('nama_kategori')->get();
+        return view('admin.kategori.partials.list', compact('kategori'));
     }
 }
 

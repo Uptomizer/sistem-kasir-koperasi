@@ -342,40 +342,41 @@ function renderCart() {
         totalAmount += subtotal
 
         cartDiv.innerHTML += `
-        <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
-            <div>
-                <div class="font-bold text-slate-800 text-sm">${item.nama}</div>
-                <div class="text-xs text-slate-500 mt-1">Rp ${item.harga.toLocaleString()} x ${item.qty}</div>
-            </div>
-
-            <div class="flex items-center gap-3">
-                <div class="text-sm font-bold text-slate-700 font-mono">Rp ${subtotal.toLocaleString()}</div>
-                
-                <div class="flex items-center border border-slate-200 rounded-lg overflow-hidden bg-slate-50">
-                    <button type="button"
-                            onclick="changeQty('${id}', -1)"
-                            class="px-2 py-1 text-slate-600 hover:bg-slate-200 hover:text-slate-900 transition-colors text-sm border-r border-slate-200 font-medium">−</button>
-                    
-                    <input type="number" 
-                           value="${item.qty}" 
-                           onchange="updateQty('${id}', this.value)"
-                           class="w-14 text-center text-xs font-semibold text-slate-700 border-none bg-white focus:ring-0 outline-none p-1 m-0 appearance-none"
-                           min="1" 
-                           max="${item.stok}">
-
-                    <button type="button"
-                            onclick="changeQty('${id}', 1)"
-                            class="px-2 py-1 text-slate-600 hover:bg-slate-200 hover:text-slate-900 transition-colors text-sm border-l border-slate-200 font-medium">+</button>
-                </div>
-
+        <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex justify-between items-start mb-2">
+                <div class="font-bold text-slate-800 text-sm leading-tight pr-2">${item.nama}</div>
                 <button type="button"
                         onclick="removeItem('${id}')"
-                        class="text-red-400 hover:text-red-600 hover:bg-red-50 p-1.5 rounded-lg transition-colors"
+                        class="text-red-400 hover:text-red-600 hover:bg-red-50 p-1 rounded-lg transition-colors -mr-1"
                         title="Hapus Item">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>
                 </button>
+            </div>
+
+            <div class="flex justify-between items-end">
+                <div>
+                     <div class="text-[10px] text-slate-500 mb-0.5">Rp ${item.harga.toLocaleString()} / unit</div>
+                     <div class="text-sm font-bold text-slate-700 font-mono">Rp ${subtotal.toLocaleString()}</div>
+                </div>
+                
+                <div class="flex items-center border border-slate-200 rounded-lg overflow-hidden bg-slate-50 h-8">
+                    <button type="button"
+                            onclick="changeQty('${id}', -1)"
+                            class="px-2 text-slate-600 hover:bg-slate-200 hover:text-slate-900 transition-colors text-sm border-r border-slate-200 font-medium h-full flex items-center">−</button>
+                    
+                    <input type="number" 
+                           value="${item.qty}" 
+                           onchange="updateQty('${id}', this.value)"
+                           class="w-10 text-center text-xs font-semibold text-slate-700 border-none bg-white focus:ring-0 outline-none p-0 m-0 appearance-none h-full"
+                           min="1" 
+                           max="${item.stok}">
+
+                    <button type="button"
+                            onclick="changeQty('${id}', 1)"
+                            class="px-2 text-slate-600 hover:bg-slate-200 hover:text-slate-900 transition-colors text-sm border-l border-slate-200 font-medium h-full flex items-center">+</button>
+                </div>
             </div>
         </div>`
     })
@@ -590,3 +591,22 @@ form.addEventListener('submit', e => {
 </div>
 </div>
 </div>
+<style>
+/* Hide Spin Button on Input Number */
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+@keyframes modalIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+.animate-modal-in {
+    animation: modalIn 0.2s ease-out forwards;
+}
+</style>

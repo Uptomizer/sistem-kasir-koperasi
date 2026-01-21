@@ -34,6 +34,10 @@ class BarangController extends Controller
 
         Barang::create($request->all());
 
+        if ($request->wantsJson()) {
+            return response()->json(['message' => 'Barang berhasil ditambahkan']);
+        }
+
         return redirect()
             ->route('admin.barang.index')
             ->with('success', 'Barang berhasil ditambahkan');
@@ -56,6 +60,10 @@ class BarangController extends Controller
 
         $barang->update($request->all());
 
+        if ($request->wantsJson()) {
+            return response()->json(['message' => 'Barang berhasil diperbarui']);
+        }
+
         return redirect()
             ->route('admin.barang.index')
             ->with('success', 'Barang berhasil diperbarui');
@@ -64,6 +72,10 @@ class BarangController extends Controller
     public function destroy(Barang $barang)
     {
         $barang->delete();
+
+        if (request()->wantsJson()) {
+            return response()->json(['message' => 'Barang berhasil dihapus']);
+        }
 
         return redirect()
             ->route('admin.barang.index')
@@ -88,6 +100,10 @@ class BarangController extends Controller
         $barang->update([
             'stok' => $request->stok
         ]);
+
+        if ($request->wantsJson()) {
+            return response()->json(['message' => 'Stok berhasil diperbarui']);
+        }
 
         return redirect()
             ->route('admin.barang.index')

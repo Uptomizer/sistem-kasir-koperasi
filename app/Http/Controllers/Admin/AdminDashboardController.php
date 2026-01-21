@@ -15,11 +15,17 @@ class AdminDashboardController extends Controller
         $totalBarang   = Barang::count();
         $totalKategori = Kategori::count();
 
-        $startOfWeek = now()->startOfWeek();
-        $endOfWeek   = now()->endOfWeek();
+        $startOfWeek = now()->startOfWeek(\Carbon\Carbon::SUNDAY);
+        $endOfWeek   = now()->endOfWeek(\Carbon\Carbon::SATURDAY);
 
         $totalTransaksiMingguIni = Penjualan::whereBetween('tanggal', [$startOfWeek, $endOfWeek])->count();
         $pendapatanMingguIni     = Penjualan::whereBetween('tanggal', [$startOfWeek, $endOfWeek])->sum('total');
+
+        $keuntunganMingguIni = DB::table('detail_penjualan')
+            ->join('penjualan', 'detail_penjualan.id_penjualan', '=', 'penjualan.id_penjualan')
+            ->join('barang', 'detail_penjualan.id_barang', '=', 'barang.id_barang')
+            ->whereBetween('penjualan.tanggal', [$startOfWeek, $endOfWeek])
+            ->sum(DB::raw('(detail_penjualan.harga - barang.harga_beli) * detail_penjualan.jumlah'));
 
         // Transaksi Hari Ini (Recent) - Keep this as distinct "Recent Activity" or update to "Recent This Week"? 
         // User asked to change "Pendapatan Hari Ini" (stat card) -> "Pendapatan Minggu Ini".
@@ -77,6 +83,7 @@ class AdminDashboardController extends Controller
             'totalKategori',
             'totalTransaksiMingguIni',
             'pendapatanMingguIni',
+            'keuntunganMingguIni',
             'recentTransactions',
             'months',
             'salesData',
@@ -127,10 +134,12 @@ class AdminDashboardController extends Controller
             }
 
         } elseif ($filter === 'weekly') {
-            // Last 7 Days logic
-            for ($i = 6; $i >= 0; $i--) {
-                $date = now()->subDays($i);
-                $labels[] = $date->format('D, d M'); // e.g., Mon, 12 Jan
+            // This Week (Sun - Sat)
+            $startOfWeek = now()->startOfWeek(\Carbon\Carbon::SUNDAY);
+            
+            for ($i = 0; $i < 7; $i++) {
+                $date = $startOfWeek->copy()->addDays($i);
+                $labels[] = $date->format('D, d M'); // e.g., Sun, 21 Jan
                 $dateString = $date->toDateString();
 
                 // Sales
@@ -146,7 +155,6 @@ class AdminDashboardController extends Controller
                     ->whereDate('penjualan.tanggal', $dateString)
                     ->sum(DB::raw('(detail_penjualan.harga - barang.harga_beli) * detail_penjualan.jumlah')) ?? 0;
             }
-
         } elseif ($filter === 'daily') {
             // Today's Hourly Logic (00:00 to 23:59)
             // Simplified: Just 6-hour blocks or every 3 hours to not overcrowd, 
@@ -212,7 +220,7 @@ class AdminDashboardController extends Controller
         if ($filter === 'daily') {
             $query->whereDate('tanggal', today());
         } elseif ($filter === 'weekly') {
-            $query->whereBetween('tanggal', [now()->startOfWeek(), now()->endOfWeek()]);
+            $query->whereBetween('tanggal', [now()->startOfWeek(\Carbon\Carbon::SUNDAY), now()->endOfWeek(\Carbon\Carbon::SATURDAY)]);
         } elseif ($filter === 'monthly') {
             $query->whereMonth('tanggal', now()->month)
                   ->whereYear('tanggal', now()->year);
@@ -254,11 +262,17 @@ class AdminDashboardController extends Controller
         $totalBarang   = Barang::count();
         $totalKategori = Kategori::count();
 
-        $startOfWeek = now()->startOfWeek();
-        $endOfWeek   = now()->endOfWeek();
+        $startOfWeek = now()->startOfWeek(\Carbon\Carbon::SUNDAY);
+        $endOfWeek   = now()->endOfWeek(\Carbon\Carbon::SATURDAY);
 
         $totalTransaksiMingguIni = Penjualan::whereBetween('tanggal', [$startOfWeek, $endOfWeek])->count();
         $pendapatanMingguIni     = Penjualan::whereBetween('tanggal', [$startOfWeek, $endOfWeek])->sum('total');
+
+        $keuntunganMingguIni = DB::table('detail_penjualan')
+            ->join('penjualan', 'detail_penjualan.id_penjualan', '=', 'penjualan.id_penjualan')
+            ->join('barang', 'detail_penjualan.id_barang', '=', 'barang.id_barang')
+            ->whereBetween('penjualan.tanggal', [$startOfWeek, $endOfWeek])
+            ->sum(DB::raw('(detail_penjualan.harga - barang.harga_beli) * detail_penjualan.jumlah'));
 
         // Recent Transactions (Limit 10, same logic as index)
         $recentTransactions = Penjualan::with('user')
@@ -273,6 +287,7 @@ class AdminDashboardController extends Controller
             'total_barang' => number_format($totalBarang),
             'total_kategori' => number_format($totalKategori),
             'pendapatan_minggu_ini' => 'Rp ' . number_format($pendapatanMingguIni, 0, ',', '.'),
+            'keuntungan_minggu_ini' => 'Rp ' . number_format($keuntunganMingguIni, 0, ',', '.'),
             'transaksi_minggu_ini' => $totalTransaksiMingguIni . ' Transaksi Berhasil',
             'recent_html' => $recentHtml
         ]);

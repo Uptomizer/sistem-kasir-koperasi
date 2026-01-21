@@ -149,6 +149,109 @@
 
     </div>
 </section>
+
+{{-- FITUR LAINNYA SECTION --}}
+<section class="bg-slate-50 py-16">
+    <div class="max-w-6xl mx-auto px-6">
+        <h2 class="text-2xl font-bold text-center text-gray-800 mb-12">
+            Fitur Unggulan Lainnya
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            <!-- Item 1 -->
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 flex items-start gap-4 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-blue-200">
+                <div class="bg-blue-100 text-blue-600 p-2.5 rounded-lg shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="font-bold text-gray-800 mb-1">Multi-User Role</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">
+                        Akses khusus untuk Administrator dan Kasir dengan batasan hak akses yang aman.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 flex items-start gap-4 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-indigo-200">
+                <div class="bg-indigo-100 text-indigo-600 p-2.5 rounded-lg shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="font-bold text-gray-800 mb-1">Dashboard Real-time</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">
+                        Pantau performa penjualan, total pendapatan, dan keuntungan harian secara langsung.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Item 3 -->
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 flex items-start gap-4 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-emerald-200">
+                <div class="bg-emerald-100 text-emerald-600 p-2.5 rounded-lg shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="font-bold text-gray-800 mb-1">Laporan Keuangan</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">
+                        Rekap otomatis pendapatan dan keuntungan bersih untuk memudahkan audit keuangan.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Item 4 -->
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 flex items-start gap-4 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-orange-200">
+                <div class="bg-orange-100 text-orange-600 p-2.5 rounded-lg shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="font-bold text-gray-800 mb-1">Desain Responsif</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">
+                        Tampilan antarmuka yang modern, responsif, dan mudah diakses dari perangkat tablet atau laptop.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Item 5 -->
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 flex items-start gap-4 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-rose-200">
+                <div class="bg-rose-100 text-rose-600 p-2.5 rounded-lg shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="font-bold text-gray-800 mb-1">Manajemen Kategori</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">
+                        Kelompokkan barang berdasarkan kategori untuk kemudahan pencarian dan pengelolaan inventaris.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Item 6 -->
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 flex items-start gap-4 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-purple-200">
+                <div class="bg-purple-100 text-purple-600 p-2.5 rounded-lg shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="font-bold text-gray-800 mb-1">Sistem Aman</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">
+                        Dilengkapi dengan autentikasi pengguna yang aman untuk melindungi data transaksi dan stok.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
 </div>
 {{-- ================= ANIMATION SCRIPT ================= --}}
 <script>

@@ -56,16 +56,16 @@
         </div>
     </div>
 
-    @if (session('success'))
-        <div class="px-6 pt-6">
-            <div class="bg-emerald-50 text-emerald-700 p-4 rounded-lg flex items-center gap-3 border border-emerald-100">
+    <div id="alert-container" class="px-6 pt-6 {{ session('success') ? '' : 'hidden' }}">
+        @if (session('success'))
+            <div class="bg-emerald-50 text-emerald-700 p-4 rounded-lg flex items-center gap-3 border border-emerald-100 alert-content">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                 </svg>
-                {{ session('success') }}
+                <span>{{ session('success') }}</span>
             </div>
-        </div>
-    @endif
+        @endif
+    </div>
 
     <div class="p-6">
         <div class="overflow-x-auto overflow-y-auto max-h-[500px] rounded-lg border border-slate-200">
@@ -90,6 +90,7 @@
 
 <script>
     function showLoading(btn, text) {
+        // Legacy support if needed, or used by Add Form
         btn.disabled = true;
         btn.innerHTML = `
             <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -102,6 +103,96 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+        // --- ALERT SYSTEM ---
+        function showAlert(message) {
+            const container = document.getElementById('alert-container');
+            container.innerHTML = `
+                <div class="bg-emerald-50 text-emerald-700 p-4 rounded-lg flex items-center gap-3 border border-emerald-100 alert-content animate-fade-in-up">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                    <span>${message}</span>
+                </div>
+            `;
+            container.classList.remove('hidden');
+            
+            // Auto hide after 3 seconds
+            setTimeout(() => {
+                container.classList.add('hidden');
+            }, 3000);
+        }
+
+        // --- AJAX HANDLER ---
+        function handleAjaxForm(formId, closeCallback) {
+            const form = document.getElementById(formId);
+            if(!form) return;
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const btn = form.querySelector('button[type="submit"]');
+                const originalText = btn.innerHTML;
+                // Determine loading text based on form ID or default
+                let loadingText = 'Memproses...';
+                if(formId === 'deleteForm') loadingText = 'Menghapus...';
+                
+                // Show loading
+                btn.disabled = true;
+                btn.innerHTML = `<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> ${loadingText}`;
+
+                fetch(form.action, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest', // Requests JSON response
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(async res => {
+                    const contentType = res.headers.get('content-type');
+                    if (!contentType || !contentType.includes('application/json')) {
+                         // Fallback if controller redirects instead of JSON
+                         // But we modified controller, so it should be JSON.
+                         // If not, it means error page or something.
+                         throw new Error('Respons bukan JSON');
+                    }
+                    if (!res.ok) {
+                        const errData = await res.json();
+                        throw new Error(errData.message || 'Terjadi kesalahan');
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    if(data.message) {
+                        showAlert(data.message);
+                    } else {
+                        showAlert('Berhasil!');
+                    }
+                    
+                    // Refresh Table
+                    if(window.fetchItems) window.fetchItems(true);
+                    
+                    // Close Modal
+                    if(closeCallback) closeCallback();
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('Gagal: ' + err.message);
+                })
+                .finally(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                });
+            });
+        }
+
+        // Initialize AJAX Forms
+        handleAjaxForm('editBarangForm', closeEditBarangModal);
+        handleAjaxForm('stokForm', closeStokModal);
+        handleAjaxForm('deleteForm', closeDeleteModal);
+
+
+        // --- EXISTING LOGIC (Search/Filter) ---
         const searchInput = document.querySelector('input[name="search"]');
         const categoryInput = document.querySelector('select[name="kategori"]');
         const itemsTable = document.getElementById('itemsTableBody');
@@ -255,7 +346,7 @@
             <h3 class="text-xl font-bold text-slate-800 mb-2">Hapus Barang?</h3>
             <p class="text-slate-500 mb-6">Tindakan ini tidak dapat dibatalkan. Barang yang dihapus mungkin akan mempengaruhi laporan.</p>
 
-            <form id="deleteForm" method="POST" action="" onsubmit="showLoading(this.querySelector('button[type=submit]'), 'Hapus...')">
+            <form id="deleteForm" method="POST" action="">
                 @csrf
                 @method('DELETE')
                 <div class="flex gap-3 justify-center">
@@ -298,7 +389,7 @@
             </div>
 
             {{-- Body --}}
-            <form id="editBarangForm" method="POST" action="" onsubmit="showLoading(this.querySelector('button[type=submit]'), 'Update...')">
+            <form id="editBarangForm" method="POST" action="">
                 @csrf
                 @method('PUT')
 
@@ -377,7 +468,7 @@
             </div>
 
             {{-- Body --}}
-            <form id="stokForm" method="POST" action="" onsubmit="showLoading(this.querySelector('button[type=submit]'), 'Simpan...')">
+            <form id="stokForm" method="POST" action="">
                 @csrf
                 @method('PUT')
 
