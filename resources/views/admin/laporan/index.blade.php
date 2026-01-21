@@ -7,34 +7,15 @@
 
 {{-- FILTER SECTION --}}
 <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6 mb-8">
-    <form id="filter-form" method="GET" action="{{ route('admin.laporan.index') }}" class="flex flex-col md:flex-row md:items-end gap-4">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         
-        <div class="flex-1 max-w-xs">
-            <label class="block text-sm font-medium text-slate-700 mb-2">Filter Tanggal</label>
-            <input type="date"
-                   name="tanggal"
-                   value="{{ request('tanggal') }}"
-                   class="w-full border-slate-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
+        <div class="flex-1">
+             <h3 class="text-slate-800 font-bold text-lg">Semua Data Penjualan</h3>
+             <p class="text-slate-500 text-sm">Rekapitulasi lengkap riwayat transaksi.</p>
         </div>
 
         <div class="flex gap-3">
-            <button class="bg-blue-600 text-white px-5 py-2 rounded-lg font-medium text-sm
-                           shadow-md shadow-blue-600/20 hover:bg-blue-700 hover:shadow-blue-700/30
-                           transition-all active:scale-95 flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd" />
-                </svg>
-                Filter
-            </button>
-
-            @if(request('tanggal'))
-                <a href="{{ route('admin.laporan.index') }}" 
-                   class="bg-slate-100 text-slate-600 px-5 py-2 rounded-lg font-medium text-sm hover:bg-slate-200 transition-colors">
-                   Reset
-                </a>
-            @endif
-
-            <a href="{{ route('admin.laporan.export', ['tanggal' => request('tanggal')]) }}"
+            <a href="{{ route('admin.laporan.export') }}"
                class="bg-emerald-600 text-white px-5 py-2 rounded-lg font-medium text-sm
                       shadow-md shadow-emerald-600/20 hover:bg-emerald-700 hover:shadow-emerald-700/30
                       transition-all active:scale-95 flex items-center gap-2">
@@ -44,7 +25,7 @@
                 Export Excel
             </a>
         </div>
-    </form>
+    </div>
 </div>
 
 {{-- SUMMARY / PROFIT CARD --}}
