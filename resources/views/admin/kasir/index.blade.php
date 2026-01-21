@@ -4,7 +4,7 @@
 @section('page-title', 'Manajemen Kasir')
 
 @section('content')
-<div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+<div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden no-select">
     
     <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
         <h2 class="font-bold text-slate-800 text-lg">Daftar Akun Kasir</h2>
@@ -117,7 +117,7 @@
 
 {{-- MODAL TAMBAH KASIR --}}
 <div id="kasirModal"
-     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden">
+     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden no-select">
 
     <div class="flex items-center justify-center min-h-screen px-4">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-md animate-modal-in">
@@ -163,7 +163,7 @@
 
 {{-- MODAL EDIT KASIR --}}
 <div id="editKasirModal"
-     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden">
+     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden no-select">
 
     <div class="flex items-center justify-center min-h-screen px-4">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-md animate-modal-in">
@@ -221,7 +221,7 @@
 
 {{-- MODAL DELETE --}}
 <div id="deleteModal"
-     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden">
+     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden no-select">
     <div class="flex items-center justify-center min-h-screen px-4">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm animate-modal-in p-6 text-center">
             

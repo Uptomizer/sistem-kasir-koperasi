@@ -6,7 +6,7 @@
 @section('content')
 
 {{-- STAT CARDS --}}
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 no-select">
 
     <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
         <div class="flex justify-between items-start">
@@ -95,7 +95,7 @@
 </div>
 
 {{-- CHARTS SECTION --}}
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8 no-select">
     
     {{-- Sales Chart --}}
     <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
@@ -152,7 +152,7 @@
 </div>
 
 {{-- RIWAYAT TRANSAKSI HARI INI SECTION --}}
-<div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+<div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden no-select">
     <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
         <h2 class="font-bold text-slate-800 text-lg">Riwayat Transaksi Hari Ini</h2>
         <a href="javascript:void(0)" onclick="openHistoryModal()" class="text-sm text-blue-600 hover:text-blue-700 font-medium">Lihat Semua →</a>
@@ -386,7 +386,7 @@
                 });
 
                 contentDiv.innerHTML = `
-                    <div class="space-y-4">
+                    <div class="space-y-4 no-select">
                         <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
                             <div class="flex justify-between text-sm mb-1">
                                 <span class="text-slate-500">No. Transaksi</span>
@@ -409,7 +409,7 @@
                             </div>
                         </div>
 
-                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 no-select">
                             <div class="flex justify-between items-center mb-2">
                                 <span class="text-slate-600 font-medium">Total Belanja</span>
                                 <span class="font-bold text-xl text-blue-600">Rp ${new Intl.NumberFormat('id-ID').format(data.total)}</span>
@@ -521,7 +521,7 @@
 @endpush
 
 {{-- HISTORY MODAL --}}
-<div id="historyModal" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-sm items-center justify-center p-4">
+<div id="historyModal" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-sm items-center justify-center p-4 no-select">
     <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden animate-fade-in-up">
         <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
             <h3 class="font-bold text-slate-800 text-lg">Riwayat Transaksi Lengkap</h3>
@@ -545,7 +545,7 @@
 </div>
 
 {{-- DETAIL MODAL --}}
-<div id="detailModal" class="fixed inset-0 z-[60] hidden bg-slate-900/50 backdrop-blur-sm items-center justify-center p-4">
+<div id="detailModal" class="fixed inset-0 z-[60] hidden bg-slate-900/50 backdrop-blur-sm items-center justify-center p-4 no-select">
     <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md flex flex-col overflow-hidden animate-fade-in-up">
         <div class="px-6 py-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
             <h3 class="font-bold text-slate-800 text-lg">Detail Transaksi</h3>

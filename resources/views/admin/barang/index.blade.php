@@ -4,7 +4,7 @@
 @section('page-title', 'Manajemen Barang')
 
 @section('content')
-<div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+<div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden no-select">
     
     <div class="px-6 py-5 border-b border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-50/50">
         <h2 class="font-bold text-slate-800 text-lg whitespace-nowrap">Daftar Barang</h2>
@@ -255,7 +255,7 @@
 @endsection
 {{-- MODAL TAMBAH BARANG --}}
 <div id="barangModal"
-     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden">
+     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden no-select">
 
     <div class="flex items-center justify-center min-h-screen px-4">
         <div
@@ -278,37 +278,53 @@
                 @csrf
 
                 <div class="p-6 space-y-4">
+                    <div>
+                        <label class="text-sm font-medium text-slate-700 mb-1 block">Nama Barang</label>
+                        <input name="nama_barang" required
+                               placeholder="Nama Barang"
+                               class="w-full border border-slate-300 px-4 py-2 rounded-lg
+                                      focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    </div>
 
-                    <input name="nama_barang" required
-                           placeholder="Nama Barang"
-                           class="w-full border border-slate-300 px-4 py-2 rounded-lg
-                                  focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <div>
+                        <label class="text-sm font-medium text-slate-700 mb-1 block">Kategori</label>
+                        <select name="id_kategori" required
+                                class="w-full border border-slate-300 px-4 py-2 rounded-lg
+                                       focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            <option value="">Pilih Kategori</option>
+                            @foreach ($kategori as $k)
+                                <option value="{{ $k->id_kategori }}">
+                                    {{ $k->nama_kategori }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
 
-                    <select name="id_kategori" required
-                            class="w-full border border-slate-300 px-4 py-2 rounded-lg
-                                   focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                        <option value="">Pilih Kategori</option>
-                        @foreach ($kategori as $k)
-                            <option value="{{ $k->id_kategori }}">
-                                {{ $k->nama_kategori }}
-                            </option>
-                        @endforeach
-                    </select>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-sm font-medium text-slate-700 mb-1 block">Harga Beli</label>
+                            <input name="harga_beli" type="number" required
+                                   placeholder="0"
+                                   class="w-full border border-slate-300 px-4 py-2 rounded-lg
+                                          focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        </div>
 
-                    <input name="harga_beli" type="number" required
-                           placeholder="Harga Beli"
-                           class="w-full border border-slate-300 px-4 py-2 rounded-lg
-                                  focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        <div>
+                            <label class="text-sm font-medium text-slate-700 mb-1 block">Harga Jual</label>
+                            <input name="harga_jual" type="number" required
+                                   placeholder="0"
+                                   class="w-full border border-slate-300 px-4 py-2 rounded-lg
+                                          focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        </div>
+                    </div>
 
-                    <input name="harga_jual" type="number" required
-                           placeholder="Harga Jual"
-                           class="w-full border border-slate-300 px-4 py-2 rounded-lg
-                                  focus:ring-2 focus:ring-blue-500 focus:outline-none">
-
-                    <input name="stok" type="number" required
-                           placeholder="Stok Awal"
-                           class="w-full border border-slate-300 px-4 py-2 rounded-lg
-                                  focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <div>
+                        <label class="text-sm font-medium text-slate-700 mb-1 block">Stok Awal</label>
+                        <input name="stok" type="number" required
+                               placeholder="0"
+                               class="w-full border border-slate-300 px-4 py-2 rounded-lg
+                                      focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    </div>
                 </div>
 
                 {{-- Footer --}}
@@ -333,7 +349,7 @@
 
 {{-- MODAL DELETE BARANG --}}
 <div id="deleteModal"
-     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden">
+     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden no-select">
     <div class="flex items-center justify-center min-h-screen px-4">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm animate-modal-in p-6 text-center">
             
@@ -370,7 +386,7 @@
 
 {{-- MODAL EDIT BARANG --}}
 <div id="editBarangModal"
-     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden">
+     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden no-select">
 
     <div class="flex items-center justify-center min-h-screen px-4">
         <div
@@ -457,7 +473,7 @@
 
 {{-- MODAL STOK --}}
 <div id="stokModal"
-     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden">
+     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden no-select">
     <div class="flex items-center justify-center min-h-screen px-4">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm animate-modal-in">
             
