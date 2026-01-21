@@ -61,6 +61,8 @@ Route::middleware(['auth', 'role:admin'])
             ->name('dashboard.stats');
     
         // Resource Routes
+        Route::get('/kategori/list', [KategoriController::class, 'getList'])
+            ->name('kategori.list');
 
         Route::resource('/kategori', KategoriController::class)
             ->except(['show']);

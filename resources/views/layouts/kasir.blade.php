@@ -19,62 +19,93 @@
 <div class="no-select">
 
     {{-- FIXED SIDEBAR --}}
-    <aside class="fixed inset-y-0 left-0 w-64 bg-green-900 text-white z-50 shadow-2xl transition-transform duration-300 ease-in-out">
+    <aside class="fixed inset-y-0 left-0 w-64 bg-[#0B1120] text-slate-300 z-50 transition-transform duration-300 ease-in-out border-r border-slate-800/50 flex flex-col">
         
-        {{-- Logo Section --}}
-        <div class="h-16 flex items-center gap-3 px-6 border-b border-slate-700/50 bg-slate-900/50">
-            <img src="{{ asset('images/logo.png') }}" 
-                 alt="Logo" 
-                 class="w-14 h-14 rounded-lg object-contain p-1">
-            <div class="font-bold text-lg tracking-tight">
-                Koperasi<span class="text-green-400">Kasir</span>
+        {{-- Brand Section --}}
+        <div class="h-20 flex items-center px-8 border-b border-white/5 bg-gradient-to-r from-transparent to-white/[0.02]">
+            <div class="flex items-center gap-3.5">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="font-bold text-white text-lg tracking-tight leading-none">KOPERASI</h1>
+                    <p class="text-[10px] uppercase tracking-widest text-emerald-400 font-semibold mt-1">Kasir Panel</p>
+                </div>
             </div>
         </div>
 
         {{-- Navigation --}}
-        <nav class="p-4 space-y-1 overflow-y-auto h-[calc(100vh-4rem)]">
+        <nav class="flex-1 overflow-y-auto py-6 px-4 space-y-1 custom-scrollbar">
             
+            <div class="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-4 mb-4 mt-2">
+                Menu Kasir
+            </div>
+
+            <a href="{{ route('kasir.dashboard') }}"
+               class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group border border-transparent
+               {{ request()->routeIs('kasir.dashboard') 
+                   ? 'bg-emerald-600/10 text-emerald-400 border-emerald-600/20 shadow-sm' 
+                   : 'hover:bg-white/5 hover:text-white' }}">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-colors {{ request()->routeIs('kasir.dashboard') ? 'text-emerald-400' : 'text-slate-400 group-hover:text-emerald-400' }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="9"></rect>
+                    <rect x="14" y="3" width="7" height="5"></rect>
+                    <rect x="14" y="12" width="7" height="9"></rect>
+                    <rect x="3" y="16" width="7" height="5"></rect>
+                </svg>
+                <span class="font-medium text-sm">Dashboard</span>
+            </a>
+
+            <div class="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-4 mb-4 mt-8">
+                Status Inventori
+            </div>
+
             @php
                 $itemCount = \App\Models\Barang::count();
                 $kategoriCount = \App\Models\Kategori::count();
             @endphp
 
-            <div class="text-xs font-semibold text-green-400/80 uppercase tracking-wider mb-2 mt-2 px-2">
-                Status Inventori
-            </div>
-
-            <div class="px-3 py-2 space-y-3">
-                
+            <div class="space-y-3 px-2">
                 {{-- Stock Item Counter --}}
-                <div class="bg-green-800/50 rounded-xl p-3 border border-green-700/50">
-                    <div class="flex items-center gap-3 mb-1">
-                        <div class="p-2 bg-green-500/20 rounded-lg text-green-300">
-                            📦
+                <div class="bg-white/5 rounded-xl p-4 border border-white/5">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="p-1.5 bg-emerald-500/20 rounded-lg text-emerald-400">
+                             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
                         </div>
-                        <span class="text-sm font-medium text-green-100">Total Barang</span>
+                        <span class="text-xs font-medium text-slate-400">Total Barang</span>
                     </div>
-                    <div class="text-2xl font-bold text-white pl-12">
+                    <div class="text-2xl font-bold text-white pl-10">
                         {{ number_format($itemCount) }}
                     </div>
                 </div>
 
                 {{-- Category Counter --}}
-                <div class="bg-green-800/50 rounded-xl p-3 border border-green-700/50">
-                    <div class="flex items-center gap-3 mb-1">
-                        <div class="p-2 bg-green-500/20 rounded-lg text-green-300">
-                            🏷️
+                <div class="bg-white/5 rounded-xl p-4 border border-white/5">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="p-1.5 bg-emerald-500/20 rounded-lg text-emerald-400">
+                             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
                         </div>
-                        <span class="text-sm font-medium text-green-100">Kategori</span>
+                        <span class="text-xs font-medium text-slate-400">Kategori</span>
                     </div>
-                    <div class="text-2xl font-bold text-white pl-12">
+                    <div class="text-2xl font-bold text-white pl-10">
                         {{ number_format($kategoriCount) }}
                     </div>
                 </div>
-
             </div>
 
         </nav>
-    </aside>
+
+        {{-- Sidebar Footer --}}
+        <div class="px-6 py-4 border-t border-white/5 bg-black/10">
+            <div class="flex items-center gap-3">
+                <div class="flex-1">
+                    <p class="text-xs font-medium text-white">Sistem Kasir</p>
+                    <p class="text-[10px] text-slate-500">Koperasi</p>
+                </div>
+            </div>
+        </div>
+    </aside>    
 
     {{-- MAIN CONTENT WRAPPER --}}
     <div class="ml-64 min-h-screen flex flex-col transition-all duration-300">
@@ -96,6 +127,7 @@
                 <div class="flex items-center gap-3 pl-6 border-l border-gray-200">
                     <div class="text-right hidden md:block">
                         <div class="text-sm font-semibold text-slate-700">{{ Auth::user()->nama_user ?? 'Kasir' }}</div> 
+                        <div class="text-xs text-slate-500">Kasir</div>
                     </div>
                     <div class="w-10 h-10 rounded-full bg-green-100 border-2 border-white shadow-sm overflow-hidden flex items-center justify-center text-green-600 font-bold">
                         @if(Auth::user()->profile_photo)

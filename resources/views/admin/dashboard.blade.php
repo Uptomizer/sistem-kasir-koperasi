@@ -36,22 +36,59 @@
         </div>
     </div>
 
-    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
-        <div class="flex justify-between items-start">
-            <div>
-                <h3 class="text-sm font-medium text-slate-500 uppercase tracking-wider">Pendapatan Minggu Ini</h3>
-                <div class="mt-2">
-                    <p class="text-3xl font-bold text-slate-800" id="statPendapatan">
-                        Rp {{ number_format($pendapatanMingguIni, 0, ',', '.') }}
-                    </p>
-                    <p class="text-sm text-slate-500 mt-1 font-medium" id="statTransaksiCount">
-                        {{ $totalTransaksiMingguIni }} Transaksi Berhasil
-                    </p>
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow relative overflow-hidden group">
+        <!-- Slide Container -->
+        <div id="statSlider" class="relative">
+            <!-- Slide 1: Pendapatan -->
+            <div class="w-full shrink-0 transition-opacity duration-700 opacity-100" id="slideRevenue">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="text-sm font-medium text-slate-500 uppercase tracking-wider flex items-center gap-2">
+                            Pendapatan Minggu Ini 
+                            <span class="text-[10px] bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded-full">Revenue</span>
+                        </h3>
+                        <div class="mt-2">
+                            <p class="text-3xl font-bold text-slate-800" id="statPendapatan">
+                                Rp {{ number_format($pendapatanMingguIni, 0, ',', '.') }}
+                            </p>
+                            <p class="text-sm text-slate-500 mt-1 font-medium" id="statTransaksiCount">
+                                {{ $totalTransaksiMingguIni }} Transaksi Berhasil
+                            </p>
+                        </div>
+                    </div>
+                    <div class="p-3 bg-emerald-50 rounded-lg text-emerald-600">
+                        💰
+                    </div>
                 </div>
             </div>
-            <div class="p-3 bg-emerald-50 rounded-lg text-emerald-600">
-                💰
+            
+            <!-- Slide 2: Keuntungan (Absolute on top) -->
+            <div class="w-full shrink-0 absolute top-0 left-0 transition-opacity duration-700 opacity-0" id="slideProfit">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="text-sm font-medium text-slate-500 uppercase tracking-wider flex items-center gap-2">
+                            Keuntungan Minggu Ini
+                            <span class="text-[10px] bg-emerald-100 text-emerald-600 px-1.5 py-0.5 rounded-full">Profit</span>
+                        </h3>
+                        <div class="mt-2">
+                            <p class="text-3xl font-bold text-emerald-600" id="statKeuntungan">
+                                Rp {{ number_format($keuntunganMingguIni, 0, ',', '.') }}
+                            </p>
+                             <p class="text-sm text-emerald-600/70 mt-1 font-medium">
+                                Margin Bersih
+                            </p>
+                        </div>
+                    </div>
+                    <div class="p-3 bg-emerald-50 rounded-lg text-emerald-600">
+                        📈
+                    </div>
+                </div>
             </div>
+        </div>
+
+        <!-- Progress Bar Visual (Optional, helps user know when it changes) -->
+        <div class="absolute bottom-0 left-0 h-1 bg-emerald-500/20 w-full">
+            <div id="slideProgress" class="h-full bg-emerald-500 w-0 transition-all duration-[25000ms] ease-linear"></div>
         </div>
     </div>
 
@@ -401,6 +438,7 @@
     }
 
     // --- AUTO REFRESH LOGIC ---
+    // --- AUTO REFRESH LOGIC ---
     function refereshDashboard() {
         // 1. Refresh Stats (Cards & Recent Table)
         fetch('{{ route("admin.dashboard.stats") }}')
@@ -410,6 +448,10 @@
                 document.querySelector('#statTotalBarang').innerText = data.total_barang;
                 document.querySelector('#statTotalKategori').innerText = data.total_kategori;
                 document.querySelector('#statPendapatan').innerText = data.pendapatan_minggu_ini;
+                // Update Keuntungan
+                if(document.getElementById('statKeuntungan')) {
+                     document.getElementById('statKeuntungan').innerText = data.keuntungan_minggu_ini;
+                }
                 document.querySelector('#statTransaksiCount').innerText = data.transaksi_minggu_ini;
 
                 // Update Recent Table (Only tbody)
@@ -425,6 +467,56 @@
 
     // Interval 45 seconds (45000 ms)
     setInterval(refereshDashboard, 45000);
+
+    // --- SLIDER LOGIC ---
+    const slideRevenue = document.querySelector('#statSlider > div:first-child');
+    const slideProfit = document.getElementById('slideProfit');
+    const progressBar = document.getElementById('slideProgress');
+    let isRevenueShown = true;
+
+    function toggleSlide() {
+        if (!slideRevenue || !slideProfit) return;
+
+        isRevenueShown = !isRevenueShown;
+        
+        if (isRevenueShown) {
+            // Show Revenue (Fade In)
+            slideRevenue.classList.remove('opacity-0');
+            slideRevenue.classList.add('opacity-100');
+            
+            // Hide Profit (Fade Out)
+            slideProfit.classList.add('opacity-0');
+            slideProfit.classList.remove('opacity-100');
+        } else {
+             // Hide Revenue (Fade Out)
+            slideRevenue.classList.add('opacity-0');
+            slideRevenue.classList.remove('opacity-100');
+            
+             // Show Profit (Fade In)
+            slideProfit.classList.remove('opacity-0');
+            slideProfit.classList.add('opacity-100');
+        }
+
+        // Reset Progress Bar Animation
+        if(progressBar) {
+            progressBar.style.transition = 'none';
+            progressBar.style.width = '0%';
+            setTimeout(() => {
+                progressBar.style.transition = 'width 25000ms linear';
+                progressBar.style.width = '100%';
+            }, 50);
+        }
+    }
+
+    // Start Slider Interval (25 seconds)
+    setInterval(toggleSlide, 25000);
+    
+    // Start initial progress
+    if(progressBar) {
+        setTimeout(() => {
+             progressBar.style.width = '100%';
+        }, 100);
+    }
 </script>
 @endpush
 

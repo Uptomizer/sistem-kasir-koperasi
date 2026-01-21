@@ -3,7 +3,7 @@
         <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
             
             {{-- Logo / Brand --}}
-            <a href="{{ route('landing') }}" class="flex items-center gap-3 group select-none">
+            <a class="flex items-center gap-3 group select-none">
                 {{-- Logo Icon --}}
                 <div class="relative flex items-center justify-center w-10 h-10 bg-gradient-to-br from-blue-700 to-indigo-600 rounded-xl shadow-lg shadow-blue-500/20 group-hover:shadow-blue-600/30 group-hover:scale-105 transition-all duration-300">
                     <span class="font-black text-xl text-white tracking-tighter">K</span>
@@ -17,7 +17,7 @@
                         Koperasi<span class="text-blue-600">App</span>
                     </span>
                     <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-widest mt-0.5">
-                        Sistem Inventaris
+                        Inventaris & Kasir
                     </span>
                 </div>
             </a>

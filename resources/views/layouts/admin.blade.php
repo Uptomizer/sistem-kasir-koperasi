@@ -19,77 +19,113 @@
 <div class="no-select">
 
     {{-- FIXED SIDEBAR --}}
-    <aside class="fixed inset-y-0 left-0 w-64 bg-slate-900 text-white z-50 shadow-2xl transition-transform duration-300 ease-in-out">
+    <aside class="fixed inset-y-0 left-0 w-64 bg-[#0B1120] text-slate-300 z-50 transition-transform duration-300 ease-in-out border-r border-slate-800/50 flex flex-col">
         
-        {{-- Logo Section --}}
-        <div class="h-16 flex items-center gap-3 px-6 border-b border-slate-700/50 bg-slate-900/50">
-            <img src="{{ asset('images/logo.png') }}" 
-                 alt="Logo" 
-                 class="w-14 h-14 rounded-lg object-contain p-1">
-            <div class="font-bold text-lg tracking-tight">
-                Admin<span class="text-blue-400">Panel</span>
+        {{-- Brand Section --}}
+        <div class="h-20 flex items-center px-8 border-b border-white/5 bg-gradient-to-r from-transparent to-white/[0.02]">
+            <div class="flex items-center gap-3.5">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="font-bold text-white text-lg tracking-tight leading-none">KOPERASI</h1>
+                    <p class="text-[10px] uppercase tracking-widest text-blue-400 font-semibold mt-1">Admin Panel</p>
+                </div>
             </div>
         </div>
 
         {{-- Navigation --}}
-        <nav class="p-4 space-y-1 overflow-y-auto h-[calc(100vh-4rem)]">
+        <nav class="flex-1 overflow-y-auto py-6 px-4 space-y-1 custom-scrollbar">
             
-            <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 mt-2 px-2">
+            <div class="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-4 mb-4 mt-2">
                 Menu Utama
             </div>
 
             <a href="{{ route('admin.dashboard') }}"
-               class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200
+               class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group border border-transparent
                {{ request()->routeIs('admin.dashboard') 
-                   ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/20' 
-                   : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
-                <span class="text-xl">📊</span>
-                <span class="font-medium">Dashboard</span>
+                   ? 'bg-blue-600/10 text-blue-400 border-blue-600/20 shadow-sm' 
+                   : 'hover:bg-white/5 hover:text-white' }}">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-colors {{ request()->routeIs('admin.dashboard') ? 'text-blue-400' : 'text-slate-400 group-hover:text-blue-400' }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="9"></rect>
+                    <rect x="14" y="3" width="7" height="5"></rect>
+                    <rect x="14" y="12" width="7" height="9"></rect>
+                    <rect x="3" y="16" width="7" height="5"></rect>
+                </svg>
+                <span class="font-medium text-sm">Dashboard</span>
             </a>
 
             <a href="{{ route('admin.kategori.index') }}"
-               class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200
+               class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group border border-transparent
                {{ request()->routeIs('admin.kategori.*') 
-                   ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/20' 
-                   : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
-                <span class="text-xl">🏷️</span>
-                <span class="font-medium">Kategori</span>
+                   ? 'bg-blue-600/10 text-blue-400 border-blue-600/20 shadow-sm' 
+                   : 'hover:bg-white/5 hover:text-white' }}">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-colors {{ request()->routeIs('admin.kategori.*') ? 'text-blue-400' : 'text-slate-400 group-hover:text-blue-400' }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                    <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                </svg>
+                <span class="font-medium text-sm">Kategori</span>
             </a>
 
             <a href="{{ route('admin.barang.index') }}"
-               class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200
+               class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group border border-transparent
                {{ request()->routeIs('admin.barang.*') 
-                   ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/20' 
-                   : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
-                <span class="text-xl">📦</span>
-                <span class="font-medium">Barang</span>
+                   ? 'bg-blue-600/10 text-blue-400 border-blue-600/20 shadow-sm' 
+                   : 'hover:bg-white/5 hover:text-white' }}">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-colors {{ request()->routeIs('admin.barang.*') ? 'text-blue-400' : 'text-slate-400 group-hover:text-blue-400' }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                    <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                </svg>
+                <span class="font-medium text-sm">Barang</span>
             </a>
 
-
-
-            <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 mt-6 px-2">
-                Laporan & Lainnya
+            <div class="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-4 mb-4 mt-8">
+                Laporan & Sistem
             </div>
 
             <a href="{{ route('admin.laporan.index') }}"
-               class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200
+               class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group border border-transparent
                {{ request()->routeIs('admin.laporan.*') 
-                   ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/20' 
-                   : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
-                <span class="text-xl">📑</span>
-                <span class="font-medium">Laporan</span>
+                   ? 'bg-blue-600/10 text-blue-400 border-blue-600/20 shadow-sm' 
+                   : 'hover:bg-white/5 hover:text-white' }}">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-colors {{ request()->routeIs('admin.laporan.*') ? 'text-blue-400' : 'text-slate-400 group-hover:text-blue-400' }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+                <span class="font-medium text-sm">Laporan</span>
             </a>
 
             <a href="{{ route('admin.kasir.index') }}"
-               class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200
+               class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group border border-transparent
                {{ request()->routeIs('admin.kasir.*') 
-                   ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/20' 
-                   : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
-                <span class="text-xl">👥</span>
-                <span class="font-medium">Akun Kasir</span>
+                   ? 'bg-blue-600/10 text-blue-400 border-blue-600/20 shadow-sm' 
+                   : 'hover:bg-white/5 hover:text-white' }}">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-colors {{ request()->routeIs('admin.kasir.*') ? 'text-blue-400' : 'text-slate-400 group-hover:text-blue-400' }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                <span class="font-medium text-sm">Akun Kasir</span>
             </a>
-
+            
         </nav>
+
+        {{-- Sidebar Footer --}}
+        <div class="px-6 py-4 border-t border-white/5 bg-black/10">
+            <div class="flex items-center gap-3">
+                <div class="flex-1">
+                    <p class="text-xs font-medium text-white">Sistem Inventaris</p>
+                    <p class="text-[10px] text-slate-500">Koperasi</p>
+                </div>
+            </div>
+        </div>
     </aside>
 
     {{-- MAIN CONTENT WRAPPER --}}
