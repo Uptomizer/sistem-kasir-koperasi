@@ -13,6 +13,8 @@ class Penjualan extends Model
         'tanggal',
         'id_user',
         'total',
+        'bayar',
+        'kembali',
     ];
 
     public $timestamps = true;

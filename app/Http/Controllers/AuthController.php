@@ -32,7 +32,7 @@ class AuthController extends Controller
 
 return redirect()
     ->route('kasir.dashboard')
-    ->with('welcome', 'Selamat Datang Kasir');
+    ->with('welcome', 'Selamat Datang ' . $user->nama_user);
 
     }
 
