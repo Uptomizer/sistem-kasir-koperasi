@@ -299,7 +299,7 @@
     }
 </script>
 @endpush
-
+<div class="no-select">
 {{-- DETAIL MODAL --}}
 <div id="detailModal" class="fixed inset-0 z-[60] hidden bg-slate-900/50 backdrop-blur-sm items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md flex flex-col overflow-hidden animate-fade-in-up">
@@ -310,7 +310,7 @@
         <div id="detailContent" class="p-6 overflow-y-auto bg-white max-h-[80vh]"></div>
     </div>
 </div>
-
+</div>
 <style>
     @keyframes fadeInUp {
         from { opacity: 0; transform: translateY(20px); }
