@@ -719,9 +719,8 @@ form.addEventListener('submit', e => {
                     receiptDiv.innerHTML = `
                         <div class="header">
                             <h2>Koperasi App</h2>
-                            <p>Jl. Contoh No. 123, Kota</p>
-                            <p>Telp: 0812-3456-7890</p>
-                        </div>
+                            <p>Koperasi Siswa SMK Senopati</p>
+                            </div>
                         <div class="divider">--------------------------------</div>
                         <div class="info">
                             <div class="row"><span>Tgl:</span> <span>${new Date(data.tanggal).toLocaleString('id-ID')}</span></div>
