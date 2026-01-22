@@ -30,7 +30,9 @@
                     </svg>
                 </div>
                 <div>
-                    <h1 class="font-bold text-white text-lg tracking-tight leading-none">KOPERASI</h1>
+                    <span class="font-bold">
+                        Koperasi<span class="text-emerald-500">App</span>
+                    </span>
                     <p class="text-[10px] uppercase tracking-widest text-emerald-400 font-semibold mt-1">Kasir Panel</p>
                 </div>
             </div>
