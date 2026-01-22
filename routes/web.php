@@ -107,5 +107,8 @@ Route::middleware(['auth', 'role:kasir'])
 
         Route::post('/transaksi', [KasirTransaksiController::class, 'store'])
             ->name('transaksi.store');
+
+        Route::get('/transaksi/{id}', [KasirDashboardController::class, 'getTransactionDetail'])
+            ->name('transaksi.detail');
     });
 
