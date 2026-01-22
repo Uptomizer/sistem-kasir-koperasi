@@ -465,8 +465,8 @@
         updateChart('profit');
     }
 
-    // Interval 45 seconds (45000 ms)
-    setInterval(refereshDashboard, 45000);
+    // Interval 15 seconds (15000 ms)
+    setInterval(refereshDashboard, 15000);
 
     // --- SLIDER LOGIC ---
     const slideRevenue = document.querySelector('#statSlider > div:first-child');

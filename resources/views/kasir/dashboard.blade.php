@@ -227,10 +227,10 @@ function fetchItems(animate = true) {
 // Expose to global for refresh button (Manual refresh uses animation)
 window.fetchItems = fetchItems;
 
-// Auto Refresh every 45 seconds (45000ms) - Silent (no animation)
+// Auto Refresh every 15 seconds (15000ms) - Silent (no animation)
 setInterval(() => {
     fetchItems(false);
-}, 45000);
+}, 15000);
 
 // Debounce helper
 function debounce(func, timeout = 300){
