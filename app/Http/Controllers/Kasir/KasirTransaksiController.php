@@ -19,7 +19,7 @@ class KasirTransaksiController extends Controller
         return back()->withErrors('Keranjang kosong atau data tidak valid');
     }
 
-    DB::transaction(function () use ($items, $request) {
+    $penjualan = DB::transaction(function () use ($items, $request) {
 
         $penjualan = Penjualan::create([
             'tanggal' => now(),
@@ -62,11 +62,13 @@ class KasirTransaksiController extends Controller
             'bayar'   => $bayar,
             'kembali' => $kembali
         ]);
+        
+        return $penjualan;
     });
 
     return redirect()
         ->route('kasir.dashboard')
-        ->with('success', 'Transaksi berhasil');
+        ->with('transaction_id', $penjualan->id_penjualan);
 }
 
 }

@@ -590,7 +590,183 @@ form.addEventListener('submit', e => {
     </div>
 </div>
 </div>
+
+{{-- DETAIL MODAL --}}
+<div id="detailModal" class="fixed inset-0 z-[60] hidden bg-slate-900/50 backdrop-blur-sm items-center justify-center p-4 no-select">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md flex flex-col overflow-hidden animate-modal-in">
+        <div class="px-6 py-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+            <h3 class="font-bold text-slate-800 text-lg">Detail Transaksi</h3>
+            <button onclick="closeDetailModal()" class="text-slate-400 hover:text-slate-600 text-2xl">&times;</button>
+        </div>
+        <div id="detailContent" class="p-6 overflow-y-auto bg-white max-h-[80vh]"></div>
+    </div>
 </div>
+</div>
+
+{{-- PRINT CONTAINER (Hidden on Screen, Visible on Print) --}}
+<div id="receipt-container" class="hidden print:block">
+    <div id="receipt-content"></div>
+</div>
+@if(session('transaction_id'))
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Delay slightly to ensure everything is loaded
+        setTimeout(() => {
+            // Pass true to trigger auto-print
+            openDetailModal({{ session('transaction_id') }}, true);
+        }, 500);
+    });
+</script>
+@endif
+
+<script>
+    // --- DETAIL MODAL LOGIC (Adapted for Kasir) ---
+    function openDetailModal(id, autoPrint = false) {
+        const modal = document.getElementById('detailModal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        
+        const contentDiv = document.getElementById('detailContent');
+        contentDiv.innerHTML = '<div class="text-center py-10 text-slate-500">Memuat detail...</div>';
+
+        // Use the Kasir route
+        fetch(`{{ url('kasir/transaksi') }}/${id}`)
+            .then(res => res.json())
+            .then(data => {
+                let itemsHtml = '';
+                let printItemsHtml = '';
+                
+                data.items.forEach(item => {
+                    // Modal HTML
+                    itemsHtml += `
+                        <div class="flex justify-between items-center py-2 border-b border-slate-50 last:border-0 no-select">
+                            <div>
+                                <div class="font-bold text-slate-800">${item.nama_barang}</div>
+                                <div class="text-xs text-slate-500">${item.qty} x Rp ${new Intl.NumberFormat('id-ID').format(item.harga)}</div>
+                            </div>
+                            <div class="font-mono text-slate-700 font-bold">
+                                Rp ${new Intl.NumberFormat('id-ID').format(item.subtotal)}
+                            </div>
+                        </div>
+                    `;
+
+                    // Print HTML (Simple tabular structure for alignment)
+                    printItemsHtml += `
+                        <div class="item">
+                            <div class="name">${item.nama_barang}</div>
+                            <div class="qty-price">${item.qty} x ${new Intl.NumberFormat('id-ID').format(item.harga)}</div>
+                            <div class="subtotal">${new Intl.NumberFormat('id-ID').format(item.subtotal)}</div>
+                        </div>
+                    `;
+                });
+
+                // --- Update Modal Content ---
+                contentDiv.innerHTML = `
+                    <div class="space-y-4 no-select">
+                        <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-100 text-center mb-4">
+                            <div class="text-emerald-600 font-bold text-lg mb-1">Transaksi Berhasil!</div>
+                            <div class="text-emerald-500 text-sm">Terima kasih telah berbelanja</div>
+                        </div>
+
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-slate-500">No. Transaksi</span>
+                                <span class="font-bold text-slate-800">#TRX-${data.id.toString().padStart(5, '0')}</span>
+                            </div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-slate-500">Kasir</span>
+                                <span class="font-bold text-slate-800">${data.kasir}</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-slate-500">Waktu</span>
+                                <span class="font-bold text-slate-800">${new Date(data.tanggal).toLocaleString('id-ID')}</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-bold text-slate-800 mb-2 border-b border-slate-200 pb-2">Item Belanja</h4>
+                            <div class="max-h-60 overflow-y-auto pr-1">
+                                ${itemsHtml}
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-slate-600 font-medium">Total Belanja</span>
+                                <span class="font-bold text-xl text-blue-600">Rp ${new Intl.NumberFormat('id-ID').format(data.total)}</span>
+                            </div>
+                            <div class="flex justify-between items-center mb-1 text-sm">
+                                <span class="text-slate-500">Bayar (Cash)</span>
+                                <span class="font-mono text-slate-700">Rp ${new Intl.NumberFormat('id-ID').format(data.bayar)}</span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm border-t border-slate-200 pt-2 mt-2">
+                                <span class="text-slate-600 font-medium">Kembali</span>
+                                <span class="font-bold text-emerald-600 font-mono">Rp ${new Intl.NumberFormat('id-ID').format(data.kembali)}</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 flex gap-2">
+                             <button onclick="closeDetailModal()" class="flex-1 bg-blue-600 text-white py-2 rounded-xl font-bold hover:bg-blue-700 transition-colors">
+                                Transaksi Baru
+                             </button>
+                        </div>
+                    </div>
+                `;
+
+                // --- Update Receipt Content (Hidden) ---
+                const receiptDiv = document.getElementById('receipt-content');
+                if(receiptDiv) {
+                    receiptDiv.innerHTML = `
+                        <div class="header">
+                            <h2>Koperasi App</h2>
+                            <p>Koperasi Siswa SMK Senopati</p>
+                            </div>
+                        <div class="divider">--------------------------------</div>
+                        <div class="info">
+                            <div class="row"><span>Tgl:</span> <span>${new Date(data.tanggal).toLocaleString('id-ID')}</span></div>
+                            <div class="row"><span>Kasir:</span> <span>${data.kasir}</span></div>
+                            <div class="row"><span>No:</span> <span>#TRX-${data.id}</span></div>
+                        </div>
+                        <div class="divider">--------------------------------</div>
+                        <div class="items">
+                            ${printItemsHtml}
+                        </div>
+                        <div class="divider">--------------------------------</div>
+                        <div class="totals">
+                            <div class="row total"><span>Total:</span> <span>${new Intl.NumberFormat('id-ID').format(data.total)}</span></div>
+                            <div class="row"><span>Bayar:</span> <span>${new Intl.NumberFormat('id-ID').format(data.bayar)}</span></div>
+                            <div class="row"><span>Kembali:</span> <span>${new Intl.NumberFormat('id-ID').format(data.kembali)}</span></div>
+                        </div>
+                        <div class="divider">--------------------------------</div>
+                        <div class="footer">
+                            <p>Terima Kasih</p>
+                            <p>Barang yang sudah dibeli</p>
+                            <p>tidak dapat ditukar/dikembalikan</p>
+                        </div>
+                    `;
+                }
+
+                // Auto Print Logic
+                if(autoPrint) {
+                    setTimeout(() => {
+                        window.print();
+                    }, 500);
+                }
+
+            })
+            .catch(err => {
+                console.error(err);
+                contentDiv.innerHTML = '<div class="text-center py-10 text-red-500">Gagal memuat detail transaksi.</div>';
+            });
+    }
+
+    function closeDetailModal() {
+        const modal = document.getElementById('detailModal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+</script>
+
 <style>
 /* Hide Spin Button on Input Number */
 input[type=number]::-webkit-inner-spin-button, 
@@ -608,5 +784,106 @@ input[type=number] {
 }
 .animate-modal-in {
     animation: modalIn 0.2s ease-out forwards;
+}
+
+/* === THERMAL PRINTER STYLES (58mm) === */
+@media print {
+    @page {
+        size: 58mm auto; /* Target standard 58mm width */
+        margin: 0;
+    }
+    
+    body * {
+        visibility: hidden;
+        height: 0;
+        overflow: hidden;
+    }
+    
+    .no-select {
+        display: none !important;
+    }
+
+    #receipt-container, #receipt-container * {
+        visibility: visible;
+        height: auto;
+        overflow: visible;
+    }
+
+    #receipt-container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 48mm; /* Effective printable width for 58mm paper is usually around 48mm */
+        padding: 2mm 0; /* Minimal padding */
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 10px;
+        line-height: 1.2;
+        color: black;
+        background: white;
+    }
+
+    /* Print Layout Styling */
+    #receipt-content .header {
+        text-align: center;
+        margin-bottom: 5px;
+    }
+    #receipt-content .header h2 {
+        font-size: 12px;
+        font-weight: bold;
+        text-transform: uppercase;
+        margin: 0 0 2px 0;
+    }
+    #receipt-content .header p {
+        margin: 0;
+        font-size: 9px;
+    }
+    
+    #receipt-content .divider {
+        text-align: center;
+        overflow: hidden;
+        white-space: nowrap;
+        margin: 2px 0;
+    }
+
+    #receipt-content .info {
+        margin-bottom: 5px;
+    }
+    #receipt-content .row {
+        display: flex;
+        justify-content: space-between;
+    }
+    
+    #receipt-content .items {
+        margin-bottom: 5px;
+    }
+    #receipt-content .item {
+        margin-bottom: 3px;
+    }
+    #receipt-content .item .name {
+        font-weight: bold;
+    }
+    #receipt-content .item .qty-price {
+        font-size: 9px;
+    }
+    #receipt-content .item .subtotal {
+        text-align: right;
+    }
+
+    #receipt-content .totals {
+        margin-top: 5px;
+    }
+    #receipt-content .totals .row.total {
+        font-weight: bold;
+        font-size: 11px;
+    }
+    
+    #receipt-content .footer {
+        text-align: center;
+        margin-top: 10px;
+        font-size: 9px;
+    }
+    #receipt-content .footer p {
+        margin: 0;
+    }
 }
 </style>
