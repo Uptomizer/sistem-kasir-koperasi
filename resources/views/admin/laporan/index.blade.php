@@ -168,10 +168,10 @@
             fetchData(window.location.href);
         });
 
-        // Auto Refresh every 45 seconds (45000ms) - Silent
+        // Auto Refresh every 15 seconds (15000ms) - Silent
         setInterval(() => {
             fetchData(window.location.href, true);
-        }, 45000);
+        }, 15000);
     });
 
     // --- PROFIT FILTER LOGIC ---
