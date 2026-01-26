@@ -72,10 +72,38 @@
             <table class="w-full text-sm text-left">
                 <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200 uppercase tracking-wider text-xs sticky top-0 z-10 shadow-sm">
                     <tr>
-                        <th class="px-6 py-4">Barang</th>
-                        <th class="px-6 py-4">Kategori</th>
-                        <th class="px-6 py-4 text-right">Harga Jual</th>
-                        <th class="px-6 py-4 text-center">Stok</th>
+                        <th class="px-6 py-4 cursor-pointer hover:bg-slate-100 transition-colors group" onclick="toggleSort('nama')">
+                            <div class="flex items-center gap-1">
+                                Barang
+                                <span class="sort-icon text-slate-400" id="icon-nama">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" /></svg>
+                                </span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 cursor-pointer hover:bg-slate-100 transition-colors group" onclick="toggleSort('kategori')">
+                            <div class="flex items-center gap-1">
+                                Kategori
+                                <span class="sort-icon text-slate-400" id="icon-kategori">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" /></svg>
+                                </span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-right cursor-pointer hover:bg-slate-100 transition-colors group" onclick="toggleSort('harga')">
+                            <div class="flex items-center justify-end gap-1">
+                                Harga Jual
+                                <span class="sort-icon text-slate-400" id="icon-harga">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" /></svg>
+                                </span>
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-center cursor-pointer hover:bg-slate-100 transition-colors group" onclick="toggleSort('stok')">
+                            <div class="flex items-center justify-center gap-1">
+                                Stok
+                                <span class="sort-icon text-slate-400" id="icon-stok">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" /></svg>
+                                </span>
+                            </div>
+                        </th>
                         <th class="px-6 py-4 text-center w-48">Aksi</th>
                     </tr>
                 </thead>
@@ -197,16 +225,64 @@
         const categoryInput = document.querySelector('select[name="kategori"]');
         const itemsTable = document.getElementById('itemsTableBody');
 
+        // Sorting params state
+        let currentSortColumn = 'nama'; // Default sort
+        let currentSortDirection = 'asc';
+
+        function toggleSort(column) {
+            if (currentSortColumn === column) {
+                // Cycle: asc -> desc -> none (default) -> asc
+                if (currentSortDirection === 'asc') {
+                    currentSortDirection = 'desc';
+                } else if (currentSortDirection === 'desc') {
+                    // Reset to default sort (nama asc) if we are turning off sorting for this column
+                    // OR strictly no sort if backend supports it. Usually 'created_at desc' or 'nama asc' is default.
+                    // Here we will reset to default 'nama' 'asc' effectively "turning off" specific column sort
+                    currentSortColumn = 'nama';
+                    currentSortDirection = 'asc';
+                }
+            } else {
+                currentSortColumn = column;
+                currentSortDirection = 'asc'; // New column starts at asc
+            }
+            
+            updateSortIcons();
+            fetchItems();
+        }
+
+        function updateSortIcons() {
+            // Reset all icons
+            document.querySelectorAll('.sort-icon').forEach(el => {
+                el.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" /></svg>';
+                el.className = 'sort-icon text-slate-400';
+            });
+
+            // Set active icon ONLY if it matches the current filtered column
+            // And prevent highlighting if we reverted to default 'nama' but the user clicked something else before?
+            // Actually, if we revert to 'nama asc', we should highlight 'nama' again as it is the active sort.
+            
+            const activeIcon = document.getElementById(`icon-${currentSortColumn}`);
+            if (activeIcon) {
+                activeIcon.className = 'sort-icon text-blue-600';
+                if (currentSortDirection === 'asc') {
+                    activeIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" /></svg>'; 
+                } else {
+                    activeIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h5m-5 4h3m5-8l4 4m0 0l4-4m-4 4v12" /></svg>'; 
+                }
+            }
+        }
+
         function fetchItems(animate = true) {
             const search = searchInput.value;
             const category = categoryInput.value;
+            const sort = `${currentSortColumn}_${currentSortDirection}`;
             
             // Loading state ONLY if animate is true
             if (animate) {
                 itemsTable.style.opacity = '0.5';
             }
 
-            fetch(`{{ route('admin.barang.items') }}?search=${search}&kategori=${category}`)
+            fetch(`{{ route('admin.barang.items') }}?search=${search}&kategori=${category}&sort=${sort}`)
                 .then(response => response.text())
                 .then(html => {
                     itemsTable.innerHTML = html;
@@ -225,6 +301,7 @@
         
         // Expose to global
         window.fetchItems = fetchItems;
+        window.toggleSort = toggleSort;
 
         // Auto Refresh every 15 seconds (15000ms) - Silent (no animation)
         setInterval(() => {
@@ -288,10 +365,15 @@
                     
                     <div>
                         <label class="text-sm font-medium text-slate-700 mb-1 block">Kode Barang / Barcode</label>
-                        <input name="kode_barang" 
-                               placeholder="Scan atau ketik kode barang"
-                               class="w-full border border-slate-300 px-4 py-2 rounded-lg
-                                      focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        <div class="flex gap-2">
+                            <input name="kode_barang" id="addKodeBarangInput"
+                                   placeholder="Scan atau ketik kode barang"
+                                   class="w-full border border-slate-300 px-4 py-2 rounded-lg
+                                          focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            <button type="button" onclick="generateRandomCode('addKodeBarangInput')" class="bg-slate-100 border border-slate-300 text-slate-600 px-3 rounded-lg hover:bg-slate-200" title="Generate Random Code">
+                                🎲
+                            </button>
+                        </div>
                     </div>
 
                     <div>
@@ -428,10 +510,15 @@
 
                     <div>
                         <label class="text-sm font-medium text-slate-700 mb-1 block">Kode Barang / Barcode</label>
-                        <input id="editKodeBarang" name="kode_barang" 
-                               placeholder="Scan atau ketik kode barang"
-                               class="w-full border border-slate-300 px-4 py-2 rounded-lg
-                                      focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        <div class="flex gap-2">
+                            <input id="editKodeBarang" name="kode_barang" 
+                                   placeholder="Scan atau ketik kode barang"
+                                   class="w-full border border-slate-300 px-4 py-2 rounded-lg
+                                          focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            <button type="button" onclick="generateRandomCode('editKodeBarang')" class="bg-slate-100 border border-slate-300 text-slate-600 px-3 rounded-lg hover:bg-slate-200" title="Generate Random Code">
+                                🎲
+                            </button>
+                        </div>
                     </div>
 
                     <div>
@@ -606,6 +693,40 @@ function closeDeleteModal() {
     document.getElementById('deleteModal').classList.add('hidden')
 }
 </script>
+
+{{-- MODAL CONFIRM GENERATE --}}
+<div class="no-select">
+<div id="confirmGenerateModal"
+     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[60] hidden no-select">
+    <div class="flex items-center justify-center min-h-screen px-4">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm animate-modal-in p-6 text-center">
+            
+            <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4 text-yellow-600">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+            </div>
+
+            <h3 class="text-xl font-bold text-slate-800 mb-2">Generate Barcode Baru?</h3>
+            <p class="text-slate-500 mb-6">Barcode sudah terisi. Kode lama akan ditimpa dengan kode acak baru.</p>
+
+            <div class="flex gap-3 justify-center">
+                <button type="button"
+                        onclick="closeConfirmGenerateModal()"
+                        class="px-5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-medium transition-colors w-full cursor-pointer">
+                    Batal
+                </button>
+                <button type="button"
+                        id="btnConfirmGenerate"
+                        class="px-5 py-2.5 rounded-xl bg-yellow-500 text-white hover:bg-yellow-600 font-medium transition-colors w-full shadow-lg shadow-yellow-500/30 cursor-pointer">
+                    Ya, Generate
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
 <style>
 @keyframes modalIn {
     from {
@@ -622,3 +743,59 @@ function closeDeleteModal() {
     animation: modalIn 0.25s ease-out;
 }
 </style>
+
+<script>
+let currentGenerateInputId = null;
+
+function generateRandomCode(inputId) {
+    const input = document.getElementById(inputId);
+    
+    // Cek jika sudah ada isinya, munculkan modal konfirmasi
+    if (input.value.trim() !== '') {
+        currentGenerateInputId = inputId;
+        document.getElementById('confirmGenerateModal').classList.remove('hidden');
+        return;
+    }
+
+    // Jika kosong, langsung eksekusi
+    executeGenerate(inputId);
+}
+
+function executeGenerate(inputId) {
+    const input = document.getElementById(inputId);
+    // Generate 13 digit random number (EAN-13 style but random)
+    let result = '2'; 
+    for (let i = 0; i < 7; i++) {
+        result += Math.floor(Math.random() * 10);
+    }
+    result += Date.now().toString().slice(-5);
+    
+    input.value = result;
+    
+    // Blink effect visual feedback
+    input.classList.add('bg-yellow-50', 'transition-colors');
+    setTimeout(() => {
+        input.classList.remove('bg-yellow-50');
+    }, 500);
+}
+
+function closeConfirmGenerateModal() {
+    document.getElementById('confirmGenerateModal').classList.add('hidden');
+    currentGenerateInputId = null;
+}
+
+// Bind confirm button
+document.getElementById('btnConfirmGenerate').addEventListener('click', () => {
+    if(currentGenerateInputId) {
+        executeGenerate(currentGenerateInputId);
+        closeConfirmGenerateModal();
+    }
+});
+
+// Close confirmation on ESC
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+        closeConfirmGenerateModal();
+    }
+});
+</script>

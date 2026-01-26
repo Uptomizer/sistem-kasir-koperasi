@@ -112,16 +112,55 @@ class BarangController extends Controller
             ->with('success', 'Stok berhasil diperbarui');
     }
 
+    public function printBarcode(Barang $barang)
+    {
+        return view('admin.barang.print_barcode', compact('barang'));
+    }
+
     public function getItems(Request $request)
     {
-        $query = Barang::with('kategori')->orderBy('nama_barang');
+        $query = Barang::with('kategori');
 
+        // Filter Param
         if ($request->kategori) {
             $query->where('id_kategori', $request->kategori);
         }
 
         if ($request->search) {
              $query->whereRaw('LOWER(nama_barang) LIKE ?', [strtolower($request->search) . '%']);
+        }
+
+        // Sort Param
+        switch ($request->sort) {
+            case 'nama_desc':
+                $query->orderBy('nama_barang', 'desc');
+                break;
+            case 'kategori_asc':
+                $query->join('kategori', 'barang.id_kategori', '=', 'kategori.id_kategori')
+                      ->orderBy('kategori.nama_kategori', 'asc')
+                      ->select('barang.*'); // Avoid column collision
+                break;
+            case 'kategori_desc':
+                $query->join('kategori', 'barang.id_kategori', '=', 'kategori.id_kategori')
+                      ->orderBy('kategori.nama_kategori', 'desc')
+                      ->select('barang.*');
+                break;
+            case 'harga_asc':
+                $query->orderBy('harga_jual', 'asc');
+                break;
+            case 'harga_desc':
+                $query->orderBy('harga_jual', 'desc');
+                break;
+            case 'stok_asc':
+                $query->orderBy('stok', 'asc');
+                break;
+            case 'stok_desc':
+                $query->orderBy('stok', 'desc');
+                break;
+            case 'nama_asc':
+            default:
+                $query->orderBy('nama_barang', 'asc');
+                break;
         }
 
         $barang = $query->get();
