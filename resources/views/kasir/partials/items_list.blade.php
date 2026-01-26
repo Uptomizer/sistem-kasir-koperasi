@@ -3,6 +3,9 @@
     <td class="px-6 py-3 font-medium text-slate-800">
         {{ $b->nama_barang }}
         <div class="text-xs text-slate-400 font-normal">{{ $b->kategori->nama_kategori ?? '-' }}</div>
+        @if($b->kode_barang)
+            <div class="text-[10px] text-slate-400 font-mono mt-0.5">{{ $b->kode_barang }}</div>
+        @endif
     </td>
     <td class="px-6 py-3 text-right font-medium text-slate-700 font-mono">
         Rp {{ number_format($b->harga_jual) }}

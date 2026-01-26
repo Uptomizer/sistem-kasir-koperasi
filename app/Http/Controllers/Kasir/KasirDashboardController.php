@@ -19,7 +19,11 @@ class KasirDashboardController extends Controller
         }
 
         if (request('search')) {
-            $query->whereRaw('LOWER(nama_barang) LIKE ?', [strtolower(request('search')) . '%']);
+            $search = strtolower(request('search'));
+            $query->where(function($q) use ($search) {
+                $q->whereRaw('LOWER(nama_barang) LIKE ?', [$search . '%'])
+                  ->orWhere('kode_barang', 'LIKE', $search . '%');
+            });
         }
 
         $barang = $query->get();
@@ -36,12 +40,34 @@ class KasirDashboardController extends Controller
         }
 
         if (request('search')) {
-            $query->whereRaw('LOWER(nama_barang) LIKE ?', [strtolower(request('search')) . '%']);
+            $search = strtolower(request('search'));
+            $query->where(function($q) use ($search) {
+                $q->whereRaw('LOWER(nama_barang) LIKE ?', [$search . '%'])
+                  ->orWhere('kode_barang', 'LIKE', $search . '%');
+            });
         }
 
         $barang = $query->get();
 
         return view('kasir.partials.items_list', compact('barang'));
+    }
+
+    public function scan()
+    {
+        $barcode = request('barcode');
+        $barang = Barang::where('kode_barang', $barcode)->first();
+
+        if ($barang) {
+            return response()->json([
+                'success' => true,
+                'item' => $barang
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Barang tidak ditemukan'
+        ]);
     }
 
     public function getTransactionDetail($id)
