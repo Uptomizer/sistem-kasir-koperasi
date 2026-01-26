@@ -82,6 +82,9 @@ Route::middleware(['auth', 'role:admin'])
         Route::put('/barang/{barang}/stok', [BarangController::class, 'updateStok'])
             ->name('barang.updateStok');
 
+        Route::get('/barang/{barang}/barcode', [BarangController::class, 'printBarcode'])
+            ->name('barang.printBarcode');
+
         Route::get('/laporan', [LaporanController::class, 'index'])
             ->name('laporan.index');
         Route::get('/laporan/export', [LaporanController::class, 'export'])

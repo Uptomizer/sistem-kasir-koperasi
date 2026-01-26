@@ -55,7 +55,16 @@ class KasirDashboardController extends Controller
     public function scan()
     {
         $barcode = request('barcode');
+        
+        // 1. Cari berdasarkan kode_barang (Exact match)
         $barang = Barang::where('kode_barang', $barcode)->first();
+
+        // 2. Jika tidak ketemu, cari berdasarkan ID (untuk barcode generik dari sistem)
+        // Barcode generik biasanya format angka (misal: 00000012)
+        if (!$barang && is_numeric($barcode)) {
+            $id = intval($barcode); // Ubah "00000012" jadi 12
+            $barang = Barang::find($id);
+        }
 
         if ($barang) {
             return response()->json([
