@@ -2,6 +2,9 @@
 <tr class="hover:bg-slate-50/80 transition-colors">
     <td class="px-6 py-4 font-medium text-slate-800">
         {{ $row->nama_barang }}
+        @if($row->kode_barang)
+            <div class="text-xs text-slate-400 font-mono mt-1">{{ $row->kode_barang }}</div>
+        @endif
     </td>
     <td class="px-6 py-4 text-slate-600">
         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
@@ -28,6 +31,7 @@
                onclick="openEditBarangModal(this)"
                data-action="{{ route('admin.barang.update', $row) }}"
                data-nama="{{ $row->nama_barang }}"
+               data-kode="{{ $row->kode_barang }}"
                data-kategori="{{ $row->id_kategori }}"
                data-beli="{{ $row->harga_beli }}"
                data-jual="{{ $row->harga_jual }}"

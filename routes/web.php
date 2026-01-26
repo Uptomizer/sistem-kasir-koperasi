@@ -105,6 +105,9 @@ Route::middleware(['auth', 'role:kasir'])
         Route::get('/items', [KasirDashboardController::class, 'getItems'])
             ->name('items.search');
 
+        Route::get('/scan', [KasirDashboardController::class, 'scan'])
+            ->name('scan');
+
         Route::post('/transaksi', [KasirTransaksiController::class, 'store'])
             ->name('transaksi.store');
 

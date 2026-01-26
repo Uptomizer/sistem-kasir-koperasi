@@ -26,6 +26,7 @@ class BarangController extends Controller
     {
         $request->validate([
             'nama_barang' => 'required',
+            'kode_barang' => 'nullable|unique:barang,kode_barang',
             'id_kategori' => 'required',
             'harga_beli'  => 'required|numeric',
             'harga_jual'  => 'required|numeric',
@@ -53,6 +54,7 @@ class BarangController extends Controller
     {
         $request->validate([
             'nama_barang' => 'required',
+            'kode_barang' => 'nullable|unique:barang,kode_barang,' . $barang->id_barang . ',id_barang',
             'id_kategori' => 'required',
             'harga_beli'  => 'required|numeric',
             'harga_jual'  => 'required|numeric',

@@ -285,6 +285,14 @@
                                class="w-full border border-slate-300 px-4 py-2 rounded-lg
                                       focus:ring-2 focus:ring-blue-500 focus:outline-none">
                     </div>
+                    
+                    <div>
+                        <label class="text-sm font-medium text-slate-700 mb-1 block">Kode Barang / Barcode</label>
+                        <input name="kode_barang" 
+                               placeholder="Scan atau ketik kode barang"
+                               class="w-full border border-slate-300 px-4 py-2 rounded-lg
+                                      focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    </div>
 
                     <div>
                         <label class="text-sm font-medium text-slate-700 mb-1 block">Kategori</label>
@@ -419,6 +427,14 @@
                     </div>
 
                     <div>
+                        <label class="text-sm font-medium text-slate-700 mb-1 block">Kode Barang / Barcode</label>
+                        <input id="editKodeBarang" name="kode_barang" 
+                               placeholder="Scan atau ketik kode barang"
+                               class="w-full border border-slate-300 px-4 py-2 rounded-lg
+                                      focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    </div>
+
+                    <div>
                         <label class="text-sm font-medium text-slate-700 mb-1 block">Kategori</label>
                         <select id="editIdKategori" name="id_kategori" required
                                 class="w-full border border-slate-300 px-4 py-2 rounded-lg
@@ -547,12 +563,14 @@ function openStokModal(btn) {
 function openEditBarangModal(btn) {
     const action = btn.dataset.action
     const nama = btn.dataset.nama
+    const kode = btn.dataset.kode
     const kategori = btn.dataset.kategori
     const beli = btn.dataset.beli
     const jual = btn.dataset.jual
 
     document.getElementById('editBarangForm').action = action
     document.getElementById('editNamaBarang').value = nama
+    document.getElementById('editKodeBarang').value = kode || ''
     document.getElementById('editIdKategori').value = kategori
     document.getElementById('editHargaBeli').value = beli
     document.getElementById('editHargaJual').value = jual

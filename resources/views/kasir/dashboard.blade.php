@@ -17,7 +17,7 @@
                 
                 <form action="{{ route('kasir.dashboard') }}" method="GET" class="flex items-center gap-2">
                     <div class="relative">
-                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari barang..." 
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari barang atau scan barcode..." 
                                class="bg-white border border-slate-300 text-slate-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-9 pr-4 py-1.5 shadow-sm outline-none">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <svg class="h-4 w-4 text-slate-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -252,7 +252,37 @@ if(searchInput) {
     searchInput.addEventListener('keydown', (e) => {
         if(e.key === 'Enter') {
             e.preventDefault()
-            fetchItems() // fetch immediately on enter
+            
+            const val = searchInput.value.trim()
+            if(!val) {
+                fetchItems()
+                return
+            }
+
+            // Coba scan sebagai barcode
+            fetch(`{{ route('kasir.scan') }}?barcode=${encodeURIComponent(val)}`)
+                .then(res => res.json())
+                .then(data => {
+                    if(data.success) {
+                        // Barang ditemukan via barcode
+                        const item = data.item
+                        // Panggil addItemToCart (pastikan parameter sesuai: id, nama, harga, stok)
+                        addItemToCart(item.id_barang, item.nama_barang, item.harga_jual, item.stok)
+                        
+                        // Reset search box dan kembalikan list ke semua barang
+                        searchInput.value = ''
+                        fetchItems()
+                        
+                        // Opsional: Bunyi beep atau feedback visual
+                    } else {
+                        // Tidak ditemukan sebagai barcode, lakukan pencarian biasa
+                        fetchItems() 
+                    }
+                })
+                .catch(err => {
+                    console.error('Error scanning:', err)
+                    fetchItems()
+                })
         }
     })
 }
