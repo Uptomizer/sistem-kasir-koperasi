@@ -718,7 +718,7 @@ form.addEventListener('submit', e => {
                 if(receiptDiv) {
                     receiptDiv.innerHTML = `
                         <div class="header">
-                            <h2>Koperasi App</h2>
+                            <h2>Koperasi</h2>
                             <p>Koperasi Siswa SMK Senopati</p>
                             </div>
                         <div class="divider">--------------------------------</div>
@@ -743,6 +743,9 @@ form.addEventListener('submit', e => {
                             <p>Barang yang sudah dibeli</p>
                             <p>tidak dapat ditukar/dikembalikan</p>
                         </div>
+                        <div class="divider">--------------------------------</div>
+                        <div class="divider">--------------------------------</div>
+                        <div class="divider">--------------------------------</div>
                     `;
                 }
 
