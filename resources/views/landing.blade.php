@@ -57,190 +57,156 @@
     </div>
 </section>
 
-{{-- FITUR SECTION --}}
-<section class="bg-white py-20">
-    <div class="max-w-6xl mx-auto px-6">
+{{-- MAIN FEATURES SECTION --}}
+<section class="bg-white py-24 relative overflow-hidden">
+    {{-- Background Decors --}}
+    <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+        <div class="absolute top-10 left-10 w-64 h-64 bg-blue-50 rounded-full mix-blend-multiply filter blur-3xl opacity-30"></div>
+        <div class="absolute bottom-10 right-10 w-64 h-64 bg-purple-50 rounded-full mix-blend-multiply filter blur-3xl opacity-30"></div>
+    </div>
 
-        <div class="text-center mb-16">
-            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-                Solusi Digital Koperasi Sekolah
+    <div class="max-w-7xl mx-auto px-6 relative z-10">
+        
+        <div class="text-center mb-20 animate-on-scroll">
+            <h2 class="text-3xl md:text-5xl font-bold text-slate-900 mb-6 tracking-tight">
+                Fitur Lengkap, Tampilan Sederhana
             </h2>
-            <p class="text-gray-600 max-w-2xl mx-auto text-lg">
-                Didesain khusus untuk meningkatkan efisiensi operasional koperasi dengan fitur-fitur modern dan mudah digunakan.
+            <p class="text-slate-600 max-w-2xl mx-auto text-lg leading-relaxed">
+                Kami menggabungkan kekuatan sistem kasir modern dengan kemudahan penggunaan. Semua yang Anda butuhkan untuk mengelola koperasi sekolah ada di sini.
             </p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {{-- GRID UTAMA (CORE FEATURES) --}}
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24 animate-on-scroll">
+            {{-- Feature 1 --}}
+            <div class="bg-white p-8 rounded-2xl border border-slate-100 shadow-xl shadow-slate-200/40 hover:shadow-2xl hover:shadow-blue-200/40 hover:-translate-y-1 transition-all duration-300 group">
+                <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">
+                    🖥️
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-3">Kasir Pintar (POS)</h3>
+                <p class="text-slate-600 leading-relaxed text-sm">
+                    Transaksi super cepat dengan pencarian barang otomatis (Ajax). Support scan barcode dan kalkulasi kembalian akurat.
+                </p>
+            </div>
 
-            {{-- CARD 1: KASIR --}}
-            <div class="group relative p-8 bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 overflow-hidden">
-                <div class="absolute inset-0 bg-gradient-to-br from-blue-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                
-                <div class="relative z-10">
-                    <div class="w-16 h-16 mb-6 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-3xl shadow-sm group-hover:scale-110 transition-transform duration-300">
-                        🖥️
+            {{-- Feature 2 --}}
+            <div class="bg-white p-8 rounded-2xl border border-slate-100 shadow-xl shadow-slate-200/40 hover:shadow-2xl hover:shadow-emerald-200/40 hover:-translate-y-1 transition-all duration-300 group">
+                <div class="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">
+                    📦
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-3">Manajemen Stok</h3>
+                <p class="text-slate-600 leading-relaxed text-sm">
+                    Pantau ribuan item secara real-time. Stok otomatis berkurang saat terjual. Dilengkapi fitur kategori untuk kerapian inventory.
+                </p>
+            </div>
+
+            {{-- Feature 3 --}}
+            <div class="bg-white p-8 rounded-2xl border border-slate-100 shadow-xl shadow-slate-200/40 hover:shadow-2xl hover:shadow-purple-200/40 hover:-translate-y-1 transition-all duration-300 group">
+                <div class="w-14 h-14 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">
+                    📈
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-3">Laporan & Analitik</h3>
+                <p class="text-slate-600 leading-relaxed text-sm">
+                    Visualisasi omset harian lewat grafik interaktif. Export laporan penjualan ke Excel untuk kebutuhan administrasi sekolah.
+                </p>
+            </div>
+        </div>
+
+        {{-- DETAILED FEATURES LIST (ZIG ZAG SIMPLE) --}}
+        <div class="space-y-24">
+            
+            {{-- Row 1: Barcode & Print --}}
+            <div class="flex flex-col md:flex-row items-center gap-12 animate-on-scroll">
+                <div class="w-full md:w-1/2">
+                    <div class="bg-slate-50 rounded-3xl p-8 border border-slate-100 relative overflow-hidden group hover:border-blue-100 transition-colors">
+                        <div class="absolute right-0 top-0 p-3 opacity-10 text-9xl select-none group-hover:scale-110 transition-transform duration-500">🏷️</div>
+                        <div class="relative z-10 flex flex-col items-center justify-center h-48 sm:h-64 text-center space-y-4">
+                            <div class="w-16 h-16 bg-white rounded-full shadow-sm flex items-center justify-center text-3xl">🖨️</div>
+                            <div class="font-mono text-slate-500 bg-white px-3 py-1 rounded border border-slate-200 text-sm">TRX-0001-2024</div>
+                        </div>
                     </div>
-                    
-                    <h3 class="text-xl font-bold text-gray-800 mb-3 group-hover:text-blue-700 transition-colors">
-                        Sistem Kasir Pintar
-                    </h3>
-                    
-                    <p class="text-gray-600 leading-relaxed">
-                        Antarmuka kasir yang responsif memudahkan input transaksi penjualan. Dilengkapi fitur pencarian barang cepat untuk melayani siswa tanpa antrian panjang.
+                </div>
+                <div class="w-full md:w-1/2">
+                    <h3 class="text-3xl font-bold text-slate-900 mb-4">Barcode System & Printing</h3>
+                    <p class="text-slate-600 text-lg leading-relaxed mb-6">
+                        Tak perlu alat mahal. Sistem kami bisa <strong>Generate Barcode</strong> sendiri untuk barang yang belum memiliki label. Support cetak label massal dan printer thermal 58mm/80mm untuk struk.
                     </p>
+                    <div class="flex flex-wrap gap-3">
+                        <span class="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-semibold">Auto Generate</span>
+                        <span class="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-semibold">Thermal Printer</span>
+                        <span class="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-semibold">Label Cetak</span>
+                    </div>
                 </div>
             </div>
 
-            {{-- CARD 2: INVENTARIS --}}
-            <div class="group relative p-8 bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 overflow-hidden">
-                <div class="absolute inset-0 bg-gradient-to-br from-emerald-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-                <div class="relative z-10">
-                    <div class="w-16 h-16 mb-6 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-3xl shadow-sm group-hover:scale-110 transition-transform duration-300">
-                        📦
+            {{-- Row 2: Security --}}
+            <div class="flex flex-col md:flex-row-reverse items-center gap-12 animate-on-scroll">
+                <div class="w-full md:w-1/2">
+                    <div class="bg-slate-50 rounded-3xl p-8 border border-slate-100 relative overflow-hidden group hover:border-emerald-100 transition-colors">
+                         <div class="absolute right-0 top-0 p-3 opacity-10 text-9xl select-none group-hover:scale-110 transition-transform duration-500">🛡️</div>
+                         <div class="relative z-10 flex flex-col items-center justify-center h-48 sm:h-64 text-center space-y-4">
+                            <div class="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 text-4xl mb-2">🔒</div>
+                            <div class="bg-white border border-slate-200 px-4 py-2 rounded-lg text-slate-700 font-bold shadow-sm">
+                                Max Input: Rp 10.000.000
+                            </div>
+                        </div>
                     </div>
-
-                    <h3 class="text-xl font-bold text-gray-800 mb-3 group-hover:text-emerald-700 transition-colors">
-                        Manajemen Stok Lengkap
-                    </h3>
-
-                    <p class="text-gray-600 leading-relaxed">
-                        Kelola ribuan item barang dan kategori dengan mudah. Pantau ketersediaan stok secara real-time untuk menghindari kekosongan barang di koperasi.
+                </div>
+                <div class="w-full md:w-1/2">
+                    <h3 class="text-3xl font-bold text-slate-900 mb-4">Keamanan Transaksi</h3>
+                    <p class="text-slate-600 text-lg leading-relaxed mb-6">
+                        Proteksi ganda untuk keuangan sekolah. Fitur limit input mencegah kesalahan ketik nominal besar (Human Error) dan pemisahan akun Admin/Kasir menjaga integritas data.
                     </p>
+                    <div class="flex flex-wrap gap-3">
+                        <span class="px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full text-sm font-semibold">Limit Protection</span>
+                        <span class="px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full text-sm font-semibold">Role Based</span>
+                        <span class="px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full text-sm font-semibold">Anti Overflow</span>
+                    </div>
                 </div>
             </div>
 
-            {{-- CARD 3: LAPORAN --}}
-            <div class="group relative p-8 bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 overflow-hidden">
-                <div class="absolute inset-0 bg-gradient-to-br from-purple-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-                <div class="relative z-10">
-                    <div class="w-16 h-16 mb-6 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center text-3xl shadow-sm group-hover:scale-110 transition-transform duration-300">
-                        📈
+            {{-- Row 3: Advanced Tools --}}
+             <div class="flex flex-col md:flex-row items-center gap-12 animate-on-scroll">
+                <div class="w-full md:w-1/2">
+                    <div class="bg-slate-50 rounded-3xl p-8 border border-slate-100 relative overflow-hidden group hover:border-purple-100 transition-colors">
+                        <div class="absolute right-0 top-0 p-3 opacity-10 text-9xl select-none group-hover:scale-110 transition-transform duration-500">⚙️</div>
+                        <div class="relative z-10 grid grid-cols-2 gap-4 h-48 sm:h-64 place-content-center">
+                            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 text-center">
+                                <div class="text-2xl mb-1">🔃</div>
+                                <div class="text-xs font-bold text-slate-600">Sorting</div>
+                            </div>
+                            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 text-center">
+                                <div class="text-2xl mb-1">🔍</div>
+                                <div class="text-xs font-bold text-slate-600">Search</div>
+                            </div>
+                            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 text-center">
+                                <div class="text-2xl mb-1">📜</div>
+                                <div class="text-xs font-bold text-slate-600">History</div>
+                            </div>
+                            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 text-center">
+                                <div class="text-2xl mb-1">📂</div>
+                                <div class="text-xs font-bold text-slate-600">Export</div>
+                            </div>
+                        </div>
                     </div>
-
-                    <h3 class="text-xl font-bold text-gray-800 mb-3 group-hover:text-purple-700 transition-colors">
-                        Laporan & Grafik Analitik
-                    </h3>
-
-                    <p class="text-gray-600 leading-relaxed">
-                        Dapatkan wawasan bisnis melalui grafik penjualan harian dan bulanan. Rekap laporan keuangan dapat diekspor otomatis untuk kebutuhan administrasi.
+                </div>
+                <div class="w-full md:w-1/2">
+                    <h3 class="text-3xl font-bold text-slate-900 mb-4">Fitur Penunjang Produktivitas</h3>
+                    <p class="text-slate-600 text-lg leading-relaxed mb-6">
+                        Dilengkapi berbagai tools pintar: <strong>List Sorting</strong> untuk melihat barang terlaris/menipis, <strong>Riwayat Transaksi</strong> lengkap, dan <strong>Export Data</strong> yang fleksibel.
                     </p>
+                    <div class="flex flex-wrap gap-3">
+                        <span class="px-3 py-1 bg-purple-50 text-purple-700 rounded-full text-sm font-semibold">Tabel Interaktif</span>
+                        <span class="px-3 py-1 bg-purple-50 text-purple-700 rounded-full text-sm font-semibold">Log System</span>
+                        <span class="px-3 py-1 bg-purple-50 text-purple-700 rounded-full text-sm font-semibold">Audit Ready</span>
+                    </div>
                 </div>
             </div>
 
         </div>
+
     </div>
 </section>
-
-{{-- FITUR LAINNYA SECTION --}}
-<section class="bg-slate-50 py-20">
-    <div class="max-w-6xl mx-auto px-6">
-        <div class="text-center mb-16">
-            <h2 class="text-3xl font-bold text-gray-800 mb-4">
-                Fitur Unggulan Lainnya
-            </h2>
-            <p class="text-gray-600 max-w-2xl mx-auto">
-                Kelengkapan fitur yang mendukung operasional koperasi anda sehari-hari.
-            </p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-            <!-- Item 1: Multi-User -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-start gap-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-blue-200 group">
-                <div class="bg-blue-50 text-blue-600 p-3 rounded-xl shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
-                </div>
-                <div>
-                    <h3 class="font-bold text-gray-800 mb-2">Akses Multi-Level</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed">
-                        Pemisahan hak akses yang jelas antara <strong>Administrator</strong> (pengelola penuh) dan <strong>Kasir</strong> (fokus penjualan) demi keamanan data.
-                    </p>
-                </div>
-            </div>
-
-            <!-- Item 2: Dashboard -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-start gap-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-indigo-200 group">
-                <div class="bg-indigo-50 text-indigo-600 p-3 rounded-xl shrink-0 group-hover:bg-indigo-600 group-hover:text-white transition-colors duration-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                    </svg>
-                </div>
-                <div>
-                    <h3 class="font-bold text-gray-800 mb-2">Dashboard Statistik</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed">
-                        Visualisasi data penjualan harian, mingguan, dan bulanan dalam bentuk grafik interaktif yang mudah dipahami.
-                    </p>
-                </div>
-            </div>
-
-            <!-- Item 3: History -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-start gap-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-emerald-200 group">
-                <div class="bg-emerald-50 text-emerald-600 p-3 rounded-xl shrink-0 group-hover:bg-emerald-600 group-hover:text-white transition-colors duration-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                </div>
-                <div>
-                    <h3 class="font-bold text-gray-800 mb-2">Riwayat Transaksi</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed">
-                        Rekaman lengkap setiap transaksi yang terjadi, memudahkan penelusuran data penjualan lampau secara detail.
-                    </p>
-                </div>
-            </div>
-
-            <!-- Item 4: Fast Search -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-start gap-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-orange-200 group">
-                <div class="bg-orange-50 text-orange-600 p-3 rounded-xl shrink-0 group-hover:bg-orange-600 group-hover:text-white transition-colors duration-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                </div>
-                <div>
-                    <h3 class="font-bold text-gray-800 mb-2">Pencarian Instan</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed">
-                        Fitur pencarian barang real-time (Ajax) memungkinkan kasir menemukan produk dalam hitungan ke-sekian detik.
-                    </p>
-                </div>
-            </div>
-
-            <!-- Item 5: Kategori -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-start gap-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-rose-200 group">
-                <div class="bg-rose-50 text-rose-600 p-3 rounded-xl shrink-0 group-hover:bg-rose-600 group-hover:text-white transition-colors duration-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                    </svg>
-                </div>
-                <div>
-                    <h3 class="font-bold text-gray-800 mb-2">Kategori Produk</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed">
-                        Pengelompokan barang berdasarkan kategori (ATK, Makanan, Seragam, dll) untuk manajemen inventaris yang lebih rapi.
-                    </p>
-                </div>
-            </div>
-
-            <!-- Item 6: Export -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-start gap-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-purple-200 group">
-                <div class="bg-purple-50 text-purple-600 p-3 rounded-xl shrink-0 group-hover:bg-purple-600 group-hover:text-white transition-colors duration-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                    </svg>
-                </div>
-                <div>
-                    <h3 class="font-bold text-gray-800 mb-2">Ekspor Laporan</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed">
-                        Unduh laporan penjualan dan stok dalam format digital untuk kebutuhan arsip, audit, atau pelaporan sekolah.
-                    </p>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</section>
-</div>
 {{-- ================= ANIMATION SCRIPT ================= --}}
 <script>
 const texts = [

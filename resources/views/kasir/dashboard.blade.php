@@ -489,7 +489,15 @@ function closePaymentModal() {
 
 // Hitung Kembalian
 uangDiterimaEl.addEventListener('input', (e) => {
-    const uang = parseInt(e.target.value) || 0
+    let uang = parseInt(e.target.value) || 0
+    
+    // Validasi Max 10 Juta (Agar DB tidak crash/overflow INT)
+    if (uang > 10000000) {
+        uang = 10000000
+        e.target.value = 10000000
+        // Optional: Show error visuals or toast
+    }
+
     const kembalian = uang - totalAmount
     
     if(uang >= totalAmount) {
