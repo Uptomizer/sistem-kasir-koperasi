@@ -15,7 +15,19 @@
         </div>
 
         <div class="flex gap-3">
+            <a href="{{ route('admin.laporan.export_pdf') }}" target="_blank"
+               onclick="this.href = this.href.split('?')[0] + window.location.search;"
+               class="bg-orange-600 text-white px-5 py-2 rounded-lg font-medium text-sm
+                      shadow-md shadow-orange-600/20 hover:bg-orange-700 hover:shadow-orange-700/30
+                      transition-all active:scale-95 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd" />
+                </svg>
+                Export PDF
+            </a>
+
             <a href="{{ route('admin.laporan.export') }}"
+               onclick="this.href = this.href.split('?')[0] + window.location.search;"
                class="bg-emerald-600 text-white px-5 py-2 rounded-lg font-medium text-sm
                       shadow-md shadow-emerald-600/20 hover:bg-emerald-700 hover:shadow-emerald-700/30
                       transition-all active:scale-95 flex items-center gap-2">

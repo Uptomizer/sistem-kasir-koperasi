@@ -79,6 +79,7 @@
                     <input
                         name="nama_kategori"
                         required
+                        maxlength="30"
                         placeholder="Nama Kategori"
                         class="w-full border border-slate-300 px-4 py-2 rounded-lg
                                focus:ring-2 focus:ring-blue-500 focus:outline-none">
@@ -134,6 +135,7 @@
                         id="editNamaKategori"
                         name="nama_kategori"
                         required
+                        maxlength="30"
                         placeholder="Nama Kategori"
                         class="w-full border border-slate-300 px-4 py-2 rounded-lg
                                focus:ring-2 focus:ring-blue-500 focus:outline-none">

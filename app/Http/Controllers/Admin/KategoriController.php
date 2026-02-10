@@ -22,7 +22,7 @@ class KategoriController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama_kategori' => 'required|unique:kategori,nama_kategori'
+            'nama_kategori' => 'required|max:30|unique:kategori,nama_kategori'
         ]);
 
         Kategori::create($request->only('nama_kategori'));
@@ -44,7 +44,7 @@ class KategoriController extends Controller
     public function update(Request $request, Kategori $kategori)
     {
         $request->validate([
-            'nama_kategori' => 'required|unique:kategori,nama_kategori,' . $kategori->id_kategori . ',id_kategori'
+            'nama_kategori' => 'required|max:30|unique:kategori,nama_kategori,' . $kategori->id_kategori . ',id_kategori'
         ]);
 
         $kategori->update($request->only('nama_kategori'));
