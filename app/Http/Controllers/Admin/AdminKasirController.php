@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class AdminKasirController extends Controller
 {
@@ -63,8 +64,8 @@ class AdminKasirController extends Controller
 
         if ($request->hasFile('profile_photo')) {
              // Delete old photo if exists
-            if ($kasir->profile_photo && \Illuminate\Support\Facades\Storage::disk('public')->exists('profile-photos/' . $kasir->profile_photo)) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete('profile-photos/' . $kasir->profile_photo);
+            if ($kasir->profile_photo && Storage::disk('public')->exists('profile-photos/' . $kasir->profile_photo)) {
+                Storage::disk('public')->delete('profile-photos/' . $kasir->profile_photo);
             }
             
             $path = $request->file('profile_photo')->store('profile-photos', 'public');
@@ -81,8 +82,8 @@ class AdminKasirController extends Controller
         $kasir = User::findOrFail($id);
         
         // Delete photo
-        if ($kasir->profile_photo && \Illuminate\Support\Facades\Storage::disk('public')->exists('profile-photos/' . $kasir->profile_photo)) {
-            \Illuminate\Support\Facades\Storage::disk('public')->delete('profile-photos/' . $kasir->profile_photo);
+        if ($kasir->profile_photo && Storage::disk('public')->exists('profile-photos/' . $kasir->profile_photo)) {
+            Storage::disk('public')->delete('profile-photos/' . $kasir->profile_photo);
         }
 
         $kasir->delete();

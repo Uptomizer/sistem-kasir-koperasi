@@ -359,6 +359,7 @@
                         <label class="text-sm font-medium text-slate-700 mb-1 block">Nama Barang</label>
                         <input name="nama_barang" required
                                placeholder="Nama Barang"
+                               maxlength="30"
                                class="w-full border border-slate-300 px-4 py-2 rounded-lg
                                       focus:ring-2 focus:ring-blue-500 focus:outline-none">
                     </div>
@@ -368,6 +369,8 @@
                         <div class="flex gap-2">
                             <input name="kode_barang" id="addKodeBarangInput"
                                    placeholder="Scan atau ketik kode barang"
+                                   maxlength="13"
+                                   oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 13)"
                                    class="w-full border border-slate-300 px-4 py-2 rounded-lg
                                           focus:ring-2 focus:ring-blue-500 focus:outline-none">
                             <button type="button" onclick="generateRandomCode('addKodeBarangInput')" class="bg-slate-100 border border-slate-300 text-slate-600 px-3 rounded-lg hover:bg-slate-200" title="Generate Random Code">
@@ -504,6 +507,7 @@
                         <label class="text-sm font-medium text-slate-700 mb-1 block">Nama Barang</label>
                         <input id="editNamaBarang" name="nama_barang" required
                                placeholder="Nama Barang"
+                               maxlength="30"
                                class="w-full border border-slate-300 px-4 py-2 rounded-lg
                                       focus:ring-2 focus:ring-blue-500 focus:outline-none">
                     </div>
@@ -513,6 +517,8 @@
                         <div class="flex gap-2">
                             <input id="editKodeBarang" name="kode_barang" 
                                    placeholder="Scan atau ketik kode barang"
+                                   maxlength="13"
+                                   oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 13)"
                                    class="w-full border border-slate-300 px-4 py-2 rounded-lg
                                           focus:ring-2 focus:ring-blue-500 focus:outline-none">
                             <button type="button" onclick="generateRandomCode('editKodeBarang')" class="bg-slate-100 border border-slate-300 text-slate-600 px-3 rounded-lg hover:bg-slate-200" title="Generate Random Code">

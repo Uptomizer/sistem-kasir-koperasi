@@ -89,6 +89,8 @@ Route::middleware(['auth', 'role:admin'])
             ->name('laporan.index');
         Route::get('/laporan/export', [LaporanController::class, 'export'])
             ->name('laporan.export');
+        Route::get('/laporan/export-pdf', [LaporanController::class, 'exportPdf'])
+            ->name('laporan.export_pdf');
 
     });
 

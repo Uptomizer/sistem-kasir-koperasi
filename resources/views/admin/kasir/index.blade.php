@@ -4,6 +4,7 @@
 @section('page-title', 'Manajemen Kasir')
 
 @section('content')
+
 <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden no-select">
     
     <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
@@ -243,16 +244,22 @@
                 </div>
             </form>
         </div>
-    </div>
+</div>
 </div>
 
+
+
+
 <script>
+// ===============================
+// MODAL & UTIL UMUM (AMAN)
+// ===============================
 function openKasirModal() {
-    document.getElementById('kasirModal').classList.remove('hidden')
+    document.getElementById('kasirModal').classList.remove('hidden');
 }
 
 function closeKasirModal() {
-    document.getElementById('kasirModal').classList.add('hidden')
+    document.getElementById('kasirModal').classList.add('hidden');
 }
 
 function openEditKasirModal(btn) {
@@ -272,34 +279,13 @@ function closeEditKasirModal() {
     document.getElementById('editKasirModal').classList.add('hidden')
 }
 
-// Tutup modal dengan ESC
-document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') {
-        closeKasirModal()
-        closeDeleteModal()
-        closeEditKasirModal()
-    }
-})
-
-function showLoading(btn, text) {
-    btn.disabled = true;
-    btn.innerHTML = `
-        <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
-        ${text}
-    `;
-    return true;
+function closeDeleteModal() {
+    document.getElementById('deleteModal').classList.add('hidden');
 }
 
 function openDeleteModal(actionUrl) {
-    document.getElementById('deleteForm').action = actionUrl
-    document.getElementById('deleteModal').classList.remove('hidden')
-}
-
-function closeDeleteModal() {
-    document.getElementById('deleteModal').classList.add('hidden')
+    document.getElementById('deleteForm').action = actionUrl;
+    document.getElementById('deleteModal').classList.remove('hidden');
 }
 
 function togglePassword() {
@@ -317,7 +303,29 @@ function togglePassword() {
         eyeClosed.classList.add('hidden');
     }
 }
+
+function showLoading(btn, text) {
+    btn.disabled = true;
+    btn.innerHTML = `
+        <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        ${text}
+    `;
+    return true;
+}
+
+// Tutup modal dengan ESC
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+        closeKasirModal()
+        closeDeleteModal()
+        closeEditKasirModal()
+    }
+})
 </script>
+
 <style>
 @keyframes modalIn {
     from { opacity: 0; transform: scale(0.95) translateY(10px); }
