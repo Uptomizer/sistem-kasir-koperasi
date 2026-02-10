@@ -11,7 +11,7 @@ dan pembuatan laporan penjualan secara efisien.
 - **Kasir Pintar (POS)** dengan dukungan Scan Barcode
 - **Cetak Struk & Barcode Generator** (Support Printer Thermal & Label)
 - **Laporan Penjualan Detail** & Analitik Grafik
-- **Export Laporan ke Excel**
+- **Export Laporan ke Excel dan Cetak ke PDF**
 - **Keamanan Transaksi** (Limit Input & Anti Overflow)
 - **UI Modern (Tailwind CSS v4)** dengan Animasi Interaktif
 
@@ -25,6 +25,7 @@ dan pembuatan laporan penjualan secara efisien.
 - **Vite**
 - **Chart.js** (Visualisasi Data)
 - **Maatwebsite Excel** (Export Data)
+- **Dompdf PDF** (Cetak PDF)
 
 ## ⚙️ Instalasi
 
