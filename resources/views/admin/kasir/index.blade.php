@@ -118,7 +118,7 @@
 
 {{-- MODAL TAMBAH KASIR --}}
 <div id="kasirModal"
-     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden no-select">
+     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9999] hidden no-select">
 
     <div class="flex items-center justify-center min-h-screen px-4">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-md animate-modal-in">
@@ -164,7 +164,7 @@
 
 {{-- MODAL EDIT KASIR --}}
 <div id="editKasirModal"
-     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden no-select">
+     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9999] hidden no-select">
 
     <div class="flex items-center justify-center min-h-screen px-4">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-md animate-modal-in">
@@ -222,7 +222,7 @@
 
 {{-- MODAL DELETE --}}
 <div id="deleteModal"
-     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden no-select">
+     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9999] hidden no-select">
     <div class="flex items-center justify-center min-h-screen px-4">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm animate-modal-in p-6 text-center">
             

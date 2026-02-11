@@ -8,6 +8,7 @@
     
     <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
         <h2 class="font-bold text-slate-800 text-lg">Daftar Kategori</h2>
+        @if(auth()->user()->role === 'admin')
         <button
     onclick="openKategoriModal()"
     class="bg-blue-600 text-white px-5 py-2 rounded-lg font-medium text-sm
@@ -18,6 +19,7 @@
     </svg>
     Tambah Kategori
 </button>
+        @endif
 
     </div>
 
@@ -53,7 +55,7 @@
 @endsection
 {{-- MODAL TAMBAH KATEGORI --}}
 <div id="kategoriModal"
-     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden">
+     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9999] hidden">
 
     <div class="flex items-center justify-center min-h-screen px-4">
         <div
@@ -107,7 +109,7 @@
 
 {{-- MODAL EDIT KATEGORI --}}
 <div id="editKategoriModal"
-     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden">
+     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9999] hidden">
 
     <div class="flex items-center justify-center min-h-screen px-4">
         <div
@@ -163,7 +165,7 @@
 
 {{-- MODAL DELETE KATEGORI --}}
 <div id="deleteModal"
-     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden">
+     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9999] hidden">
     <div class="flex items-center justify-center min-h-screen px-4">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm animate-modal-in p-6 text-center">
             
@@ -300,6 +302,17 @@
         handleAjaxForm('kategoriForm', closeKategoriModal);
         handleAjaxForm('editKategoriForm', closeEditKategoriModal);
         handleAjaxForm('deleteForm', closeDeleteModal);
+
+        // Auto Refresh Categories (15s)
+        setInterval(() => {
+            const isAnyModalOpen = !document.getElementById('kategoriModal').classList.contains('hidden') || 
+                                   !document.getElementById('editKategoriModal').classList.contains('hidden') || 
+                                   !document.getElementById('deleteModal').classList.contains('hidden');
+                                   
+            if (!isAnyModalOpen) {
+                fetchCategories();
+            }
+        }, 15000);
     });
 
     // --- MODAL FUNCTIONS (Global Scope) ---

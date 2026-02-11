@@ -81,7 +81,7 @@ class LaporanController extends Controller
             ]);
         }
 
-        return view('admin.laporan.index', [
+        return view('supervisor.laporan.index', [
             'penjualan' => $penjualan,
             'totalKeuntunganHarian' => $totalKeuntungan, // Variable name kept for view compatibility, but logic is dynamic
             'profitSubtitle' => $subtitle
@@ -143,7 +143,7 @@ class LaporanController extends Controller
             }
         }
 
-        $pdf = Pdf::loadView('admin.laporan.pdf', compact('penjualan', 'totalKeuntungan', 'subtitle'));
+        $pdf = Pdf::loadView('supervisor.laporan.pdf', compact('penjualan', 'totalKeuntungan', 'subtitle'));
         
         // Setup paper size
         $pdf->setPaper('a4', 'portrait');

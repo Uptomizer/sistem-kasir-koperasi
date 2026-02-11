@@ -26,7 +26,7 @@ class LaporanPenjualanExport implements FromCollection, WithHeadings, ShouldAuto
 
     public function collection(): Collection
     {
-        $query = Penjualan::with(['detail.barang'])
+        $query = Penjualan::with(['detail.barang', 'user'])
             ->orderBy('tanggal');
 
         if ($this->tanggal) {
@@ -35,38 +35,44 @@ class LaporanPenjualanExport implements FromCollection, WithHeadings, ShouldAuto
 
         $rows = [];
         $totalKeuntungan = 0;
+        $grandTotalKeuntungan = 0;
 
         foreach ($query->get() as $trx) {
-            foreach ($trx->detail as $item) {
+            foreach ($trx->detail as $index => $item) {
                 // Handle deletion case safely
                 $namaBarang = $item->barang ? $item->barang->nama_barang : 'Barang Terhapus';
                 $hargaBeli = $item->barang ? $item->barang->harga_beli : 0;
+                $kasir = $trx->user->nama_user ?? 'Umum';
 
                 $keuntunganItem = ($item->harga - $hargaBeli) * $item->jumlah;
+                $grandTotalKeuntungan += $keuntunganItem;
 
-                $totalKeuntungan += $keuntunganItem;
+                $diskonDisplay = ($index === 0 && $trx->diskon > 0) ? $trx->diskon : '';
 
                 $rows[] = [
-                    'tanggal'    => \Carbon\Carbon::parse($trx->tanggal)->format('d-m-Y H:i'),
+                    'tanggal'    => \Carbon\Carbon::parse($trx->tanggal)->format('d/m/Y H:i'),
+                    'kasir'      => $kasir,
                     'barang'     => $namaBarang,
                     'qty'        => $item->jumlah,
-                    'harga'      => $item->harga,
-                    'subtotal'   => $item->subtotal,
-                    'total_trx'  => $trx->total,
+                    'harga_beli' => $hargaBeli,
+                    'harga_jual' => $item->harga,
+                    'diskon'     => $diskonDisplay,
                     'keuntungan' => $keuntunganItem,
                 ];
             }
         }
 
         // Baris total keuntungan (footer)
+        // Adjust footer structure to match columns
         $rows[] = [
             'tanggal'    => '',
-            'barang'     => 'TOTAL KEUNTUNGAN',
+            'kasir'      => '',
+            'barang'     => '',
             'qty'        => '',
-            'harga'      => '',
-            'subtotal'   => '',
-            'total_trx'  => '',
-            'keuntungan' => $totalKeuntungan,
+            'harga_beli' => '',
+            'harga_jual' => 'TOTAL KEUNTUNGAN',
+            'diskon'     => '',
+            'keuntungan' => $grandTotalKeuntungan,
         ];
         
         $this->rowCount = count($rows);
@@ -78,12 +84,13 @@ class LaporanPenjualanExport implements FromCollection, WithHeadings, ShouldAuto
     public function headings(): array
     {
         return [
-            'Tanggal Transaksi',
+            'Tanggal',
+            'Kasir',
             'Nama Barang',
             'Qty',
-            'Harga Satuan',
-            'Subtotal',
-            'Total Transaksi',
+            'Harga Beli',
+            'Harga Jual',
+            'Diskon',
             'Keuntungan',
         ];
     }
@@ -91,17 +98,17 @@ class LaporanPenjualanExport implements FromCollection, WithHeadings, ShouldAuto
     public function columnFormats(): array
     {
         return [
-            'D' => '#,##0', // Harga Satuan
-            'E' => '#,##0', // Subtotal
-            'F' => '#,##0', // Total Transaksi
-            'G' => '#,##0', // Keuntungan
+            'E' => '#,##0', // Harga Beli
+            'F' => '#,##0', // Harga Jual
+            'G' => '#,##0', // Diskon
+            'H' => '#,##0', // Keuntungan
         ];
     }
 
     public function styles(Worksheet $sheet)
     {
         // Style Header
-        $sheet->getStyle('A1:G1')->applyFromArray([
+        $sheet->getStyle('A1:H1')->applyFromArray([
             'font' => ['bold' => true, 'color' => ['argb' => 'FFFFFF']],
             'fill' => [
                 'fillType' => Fill::FILL_SOLID,
@@ -111,7 +118,7 @@ class LaporanPenjualanExport implements FromCollection, WithHeadings, ShouldAuto
         ]);
 
         // Style Data Rows Borders
-        $sheet->getStyle('A1:G' . ($this->rowCount + 1))->applyFromArray([
+        $sheet->getStyle('A1:H' . ($this->rowCount + 1))->applyFromArray([
             'borders' => [
                 'allBorders' => [
                     'borderStyle' => Border::BORDER_THIN,
@@ -121,9 +128,16 @@ class LaporanPenjualanExport implements FromCollection, WithHeadings, ShouldAuto
         ]);
         
         // Style Footer Row (Total)
-        $lastRow = $this->rowCount + 1; // +1 because row 1 is header
+        $lastRow = $this->rowCount + 1; // +1 because row 1 is header (already included in count if header is not part of collection, wait - headings are separate. rowCount includes data + footer row. So +1 for header row)
+        // Wait, Maatwebsite adds header automatically at row 1.
+        // My $rows contains data + footer.
+        // So Header is row 1.
+        // Data starts row 2.
+        // Footer is row $rowCount + 1.
         
-        $sheet->getStyle("A{$lastRow}:G{$lastRow}")->applyFromArray([
+        // Actually $lastRow is correct based on rowCount of data.
+        
+        $sheet->getStyle("A{$lastRow}:H{$lastRow}")->applyFromArray([
             'font' => ['bold' => true, 'color' => ['argb' => '1E293B']],
             'fill' => [
                 'fillType' => Fill::FILL_SOLID,
@@ -131,7 +145,7 @@ class LaporanPenjualanExport implements FromCollection, WithHeadings, ShouldAuto
             ],
         ]);
 
-        $sheet->mergeCells("B{$lastRow}:D{$lastRow}");
-        $sheet->getStyle("B{$lastRow}")->getAlignment()->setHorizontal('right');
+        $sheet->mergeCells("F{$lastRow}:G{$lastRow}");
+        $sheet->getStyle("F{$lastRow}")->getAlignment()->setHorizontal('right');
     }
 }

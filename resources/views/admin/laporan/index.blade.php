@@ -313,7 +313,7 @@
 @endpush
 <div class="no-select">
 {{-- DETAIL MODAL --}}
-<div id="detailModal" class="fixed inset-0 z-[60] hidden bg-slate-900/50 backdrop-blur-sm items-center justify-center p-4">
+<div id="detailModal" class="fixed inset-0 z-[9999] hidden bg-slate-900/50 backdrop-blur-sm items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md flex flex-col overflow-hidden animate-fade-in-up">
         <div class="px-6 py-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
             <h3 class="font-bold text-slate-800 text-lg">Detail Transaksi</h3>
