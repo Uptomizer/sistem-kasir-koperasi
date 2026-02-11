@@ -8,6 +8,13 @@ use Illuminate\Http\Request;
 
 class KategoriController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('role:admin')->only([
+            'create', 'store', 'edit', 'update', 'destroy'
+        ]);
+    }
+
     public function index()
     {
         $kategori = Kategori::orderBy('nama_kategori')->get();
@@ -25,7 +32,15 @@ class KategoriController extends Controller
             'nama_kategori' => 'required|max:30|unique:kategori,nama_kategori'
         ]);
 
-        Kategori::create($request->only('nama_kategori'));
+        $kategori = Kategori::create($request->only('nama_kategori'));
+
+        // Activity Log
+        \App\Models\ActivityLog::create([
+            'id_user' => \Illuminate\Support\Facades\Auth::id(),
+            'action' => 'create',
+            'target' => $kategori->nama_kategori,
+            'details' => 'Menambahkan kategori baru'
+        ]);
 
         if ($request->wantsJson()) {
             return response()->json(['message' => 'Kategori berhasil ditambahkan']);
@@ -49,6 +64,14 @@ class KategoriController extends Controller
 
         $kategori->update($request->only('nama_kategori'));
 
+        // Activity Log
+        \App\Models\ActivityLog::create([
+            'id_user' => \Illuminate\Support\Facades\Auth::id(),
+            'action' => 'update',
+            'target' => $kategori->nama_kategori,
+            'details' => 'Memperbarui nama kategori'
+        ]);
+
         if ($request->wantsJson()) {
             return response()->json(['message' => 'Kategori berhasil diperbarui']);
         }
@@ -60,10 +83,19 @@ class KategoriController extends Controller
 
     public function destroy(Kategori $kategori)
     {
+        $targetName = $kategori->nama_kategori;
+
         // Delete all associated barang items first (Manual Cascade)
         $kategori->barang()->delete();
-        
         $kategori->delete();
+
+        // Activity Log
+        \App\Models\ActivityLog::create([
+            'id_user' => \Illuminate\Support\Facades\Auth::id(),
+            'action' => 'delete',
+            'target' => $targetName,
+            'details' => 'Menghapus kategori dan semua barang terkait'
+        ]);
 
         if (request()->wantsJson()) {
             return response()->json(['message' => 'Kategori berhasil dihapus']);

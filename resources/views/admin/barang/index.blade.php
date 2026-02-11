@@ -43,6 +43,34 @@
                 </svg>
             </button>
 
+            <div class="flex gap-2 w-full md:w-auto">
+                <a href="{{ route('admin.barang.export') }}"
+                   class="bg-emerald-600 text-white px-4 py-2 rounded-lg font-medium text-sm
+                          shadow-lg shadow-emerald-600/20 hover:bg-emerald-700 hover:shadow-emerald-700/30
+                          transition-all active:scale-95 flex items-center gap-2 justify-center whitespace-nowrap"
+                   title="Export Excel">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                    Export
+                </a>
+                
+                @if(auth()->user()->role === 'admin')
+                <button
+                    onclick="openImportModal()"
+                    class="bg-indigo-600 text-white px-4 py-2 rounded-lg font-medium text-sm
+                           shadow-lg shadow-indigo-600/20 hover:bg-indigo-700 hover:shadow-indigo-700/30
+                           transition-all active:scale-95 flex items-center gap-2 justify-center whitespace-nowrap"
+                    title="Import Excel">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    Import
+                </button>
+                @endif
+            </div>
+
+            @if(auth()->user()->role === 'admin')
             <button
                 onclick="openBarangModal()"
                 class="bg-blue-600 text-white px-5 py-2 rounded-lg font-medium text-sm
@@ -53,6 +81,7 @@
                 </svg>
                 Tambah
             </button>
+            @endif
         </div>
     </div>
 
@@ -330,9 +359,68 @@
 </script>
 
 @endsection
+
+{{-- MODAL IMPORT --}}
+<div id="importModal"
+     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9999] hidden no-select">
+    <div class="flex items-center justify-center min-h-screen px-4">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md animate-modal-in overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+                <h3 class="font-bold text-slate-800 text-lg">Import Data Barang</h3>
+                <button onclick="closeImportModal()" class="text-slate-400 hover:text-slate-600 text-xl">&times;</button>
+            </div>
+            
+            <form action="{{ route('admin.barang.import') }}" method="POST" enctype="multipart/form-data" onsubmit="return showLoading(this.querySelector('button[type=submit]'), 'Sedang mengimpor...')">
+                @csrf
+                <div class="p-6 space-y-4">
+                    <div class="p-4 bg-blue-50 text-blue-800 text-sm rounded-lg border border-blue-100">
+                        <p class="font-bold mb-1 flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                            Panduan Import
+                        </p>
+                        <ul class="list-disc pl-5 space-y-1 text-xs opacity-90">
+                            <li>Format file wajib: <strong>.xlsx</strong> atau <strong>.csv</strong>.</li>
+                            <li>Pastikan header kolom sesuai: <em>nama_barang, kode_barang, kategori, harga_beli, harga_jual, stok</em>.</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Pilih File</label>
+                        <input type="file" name="file" required accept=".xlsx, .xls, .csv"
+                               class="block w-full text-sm text-slate-500
+                                      file:mr-4 file:py-2.5 file:px-4
+                                      file:rounded-full file:border-0
+                                      file:text-sm file:font-semibold
+                                      file:bg-indigo-50 file:text-indigo-700
+                                      hover:file:bg-indigo-100
+                                      cursor-pointer border border-slate-200 rounded-lg">
+                    </div>
+                </div>
+
+                <div class="px-6 py-4 border-t border-slate-200 flex justify-end gap-3 bg-slate-50">
+                    <button type="button" onclick="closeImportModal()" class="px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-200 font-medium transition-colors">Batal</button>
+                    <button type="submit" class="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700 transition font-medium shadow-lg shadow-indigo-600/20 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>
+                        Mulai Import
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function openImportModal() {
+    document.getElementById('importModal').classList.remove('hidden');
+}
+
+function closeImportModal() {
+    document.getElementById('importModal').classList.add('hidden');
+}
+</script>
 {{-- MODAL TAMBAH BARANG --}}
 <div id="barangModal"
-     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden no-select">
+     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9999] hidden no-select">
 
     <div class="flex items-center justify-center min-h-screen px-4">
         <div
@@ -442,7 +530,7 @@
 
 {{-- MODAL DELETE BARANG --}}
 <div id="deleteModal"
-     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden no-select">
+     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9999] hidden no-select">
     <div class="flex items-center justify-center min-h-screen px-4">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm animate-modal-in p-6 text-center">
             
@@ -479,7 +567,7 @@
 
 {{-- MODAL EDIT BARANG --}}
 <div id="editBarangModal"
-     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden no-select">
+     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9999] hidden no-select">
 
     <div class="flex items-center justify-center min-h-screen px-4">
         <div
@@ -582,7 +670,7 @@
 
 {{-- MODAL STOK --}}
 <div id="stokModal"
-     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden no-select">
+     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9999] hidden no-select">
     <div class="flex items-center justify-center min-h-screen px-4">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm animate-modal-in">
             
@@ -703,7 +791,7 @@ function closeDeleteModal() {
 {{-- MODAL CONFIRM GENERATE --}}
 <div class="no-select">
 <div id="confirmGenerateModal"
-     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[60] hidden no-select">
+     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9999] hidden no-select">
     <div class="flex items-center justify-center min-h-screen px-4">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm animate-modal-in p-6 text-center">
             

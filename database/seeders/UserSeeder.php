@@ -18,6 +18,15 @@ class UserSeeder extends Seeder
                 'role' => 'admin'
             ]
         );
+
+        User::updateOrCreate(
+            ['username' => 'kasir'],
+            [
+                'nama_user' => 'Kasir Utama',
+                'password' => Hash::make('kasir123'),
+                'role' => 'kasir'
+            ]
+        );
     }
 }
 

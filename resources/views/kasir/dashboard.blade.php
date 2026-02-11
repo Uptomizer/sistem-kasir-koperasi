@@ -15,9 +15,9 @@
                     <span class="text-xl">📦</span> Daftar Barang
                 </h2>
                 
-                <form action="{{ route('kasir.dashboard') }}" method="GET" class="flex items-center gap-2">
+                <div class="flex items-center gap-2">
                     <div class="relative">
-                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari barang atau scan barcode..." 
+                        <input type="text" name="search" id="searchInput" value="{{ request('search') }}" placeholder="Cari barang atau scan barcode..." 
                                class="bg-white border border-slate-300 text-slate-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-9 pr-4 py-1.5 shadow-sm outline-none">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <svg class="h-4 w-4 text-slate-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -26,7 +26,7 @@
                         </div>
                     </div>
 
-                    <select name="kategori" 
+                    <select name="kategori" id="categoryInput"
                             class="bg-white border border-slate-300 text-slate-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-3 pr-8 py-1.5 shadow-sm cursor-pointer outline-none max-w-[150px]">
                         <option value="">Semua Kategori</option>
                         @foreach($kategori as $k)
@@ -35,23 +35,13 @@
                             </option>
                         @endforeach
                     </select>
+                </div>
 
-                    <button type="submit" class="hidden">Cari</button>
-                </form>
 
-                <button
-                    onclick="window.fetchItems ? window.fetchItems(true) : location.reload()"
-                    class="bg-white border border-slate-300 text-slate-600 px-3 py-1.5 rounded-lg font-medium text-sm
-                           hover:bg-slate-50 hover:text-blue-600 transition-colors flex items-center gap-2 whitespace-nowrap group"
-                    title="Refresh Stok">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform group-hover:rotate-180 duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                    </svg>
-                </button>
             </div>
 
             <div class="text-sm text-slate-500 whitespace-nowrap">
-                Total: <span class="font-semibold text-slate-700">{{ $barang->count() }}</span>
+                Total: <span class="font-semibold text-slate-700" id="filtered-item-count">{{ $barang->count() }}</span>
             </div>
         </div>
 
@@ -103,10 +93,48 @@
                     <span class="msg-text">Error message</span>
                 </div>
 
-                <div class="flex justify-between items-center mb-4">
-                    <span class="text-slate-500 font-medium">Total Harga</span>
-                    <span id="total" class="font-bold text-2xl text-slate-800 font-mono">Rp 0</span>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-slate-500 mb-2">Pilih Diskon / Promo</label>
+                    <div id="discountContainer" class="space-y-2 max-h-32 overflow-y-auto border border-slate-200 rounded-lg p-2 bg-slate-50">
+                        @forelse($discounts as $d)
+                            <label class="flex items-center space-x-2 cursor-pointer p-1 hover:bg-slate-100 rounded">
+                                <input type="checkbox" class="discount-checkbox rounded border-slate-300 text-blue-600 focus:ring-blue-500" 
+                                       data-id="{{ $d->id }}" 
+                                       data-type="{{ $d->type }}" 
+                                       data-value="{{ $d->value }}"
+                                       onchange="calculateDocDiscount()">
+                                <span class="text-sm text-slate-700 flex-1">
+                                    <span class="font-medium">{{ $d->name }}</span>
+                                    <span class="text-xs text-slate-500 ml-1">
+                                        ({{ $d->type == 'percent' ? $d->value . '%' : 'Rp ' . number_format($d->value) }})
+                                    </span>
+                                </span>
+                            </label>
+                        @empty
+                            <div class="text-xs text-slate-400 text-center py-2">Tidak ada diskon tersedia</div>
+                        @endforelse
+                    </div>
                 </div>
+
+                <div class="flex justify-between items-center mb-1">
+                    <span class="text-slate-500 font-medium">Subtotal</span>
+                    <span id="subtotal" class="font-bold text-slate-700 font-mono">Rp 0</span>
+                </div>
+                
+                <div class="flex justify-between items-center mb-1 text-green-600">
+                    <span class="font-medium">Diskon</span>
+                    <span id="discountDisplay" class="font-bold font-mono">- Rp 0</span>
+                </div>
+
+                <div class="flex justify-between items-center mb-4 pt-2 border-t border-slate-200">
+                    <span class="text-slate-800 font-bold text-lg">Total Akhir</span>
+                    <span id="grandTotal" class="font-bold text-2xl text-blue-600 font-mono">Rp 0</span>
+                </div>
+
+                <!-- Hidden inputs for form submission -->
+                <input type="hidden" name="discount_ids" id="discountIds">
+                <input type="hidden" name="diskon" id="inputDiskon">
+                <input type="button" class="hidden" id="triggerCalc" onclick="calculateDocDiscount()">
 
                 <input type="hidden" name="items" id="itemsInput">
 
@@ -142,6 +170,11 @@
                 <div class="text-3xl font-bold text-slate-800 font-mono" id="modalTotal">Rp 0</div>
             </div>
 
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-slate-500 mb-1">Total Tagihan</label>
+                <div class="text-3xl font-bold text-slate-800 font-mono" id="modalTotal">Rp 0</div>
+            </div>
+
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-2">Uang Diterima (Rp)</label>
                 <input type="number" id="uangDiterima" 
@@ -149,7 +182,7 @@
                        placeholder="0">
             </div>
 
-            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 mt-6">
                 <div class="flex justify-between items-center">
                     <span class="text-slate-600 font-medium">Kembalian</span>
                     <span id="kembalian" class="font-bold text-xl text-slate-400 font-mono">Rp 0</span>
@@ -186,14 +219,170 @@ const itemsTable = document.getElementById('itemsTableBody')
 // Payment Modal Elements
 const paymentModal = document.getElementById('paymentModal')
 const modalTotalEl = document.getElementById('modalTotal')
+const modalTotalAkhirEl = document.getElementById('modalTotalAkhir')
+const inputDiskonEl = document.getElementById('inputDiskon')
 const uangDiterimaEl = document.getElementById('uangDiterima')
 const kembalianEl   = document.getElementById('kembalian')
 const btnConfirmPay = document.getElementById('btnConfirmPay')
 
-// AJAX Search & Filter
-// AJAX Search & Filter
-const searchInput   = document.querySelector('input[name="search"]')
-const categoryInput = document.querySelector('select[name="kategori"]')
+// ... (Existing code)
+
+// === PAYMENT MODAL LOGIC ===
+function openPaymentModal() {
+    if(totalAmount <= 0) return
+    
+    modalTotalEl.innerText = 'Rp ' + totalAmount.toLocaleString()
+    modalTotalAkhirEl.innerText = 'Rp ' + totalAmount.toLocaleString()
+    
+    inputDiskonEl.value = 0
+    uangDiterimaEl.value = ''
+    resetKembalian()
+    
+    paymentModal.classList.remove('hidden')
+    // Reset Checkboxes
+    document.querySelectorAll('.discount-checkbox').forEach(cb => cb.checked = false)
+    calculateTotalDiscount()
+    
+    setTimeout(() => uangDiterimaEl.focus(), 100)
+}
+
+function calculateTotalDiscount() {
+    let totalDiscount = 0
+    let selectedIds = []
+
+    document.querySelectorAll('.discount-checkbox:checked').forEach(cb => {
+        const type = cb.dataset.type
+        const val = parseFloat(cb.dataset.value)
+        const id = cb.dataset.id
+
+        selectedIds.push(id)
+
+        if (type === 'percent') {
+            totalDiscount += Math.round((val / 100) * totalAmount)
+        } else {
+            totalDiscount += val
+        }
+    })
+
+    // Cap at totalAmount
+    if (totalDiscount > totalAmount) totalDiscount = totalAmount
+
+    inputDiskonEl.value = totalDiscount
+    document.getElementById('discountIds').value = selectedIds.join(',')
+    
+    // Recalculate Payment
+    calculatePayment()
+}
+
+function calculatePayment() {
+    let diskon = parseInt(inputDiskonEl.value) || 0
+    let uang   = parseInt(uangDiterimaEl.value) || 0
+    
+    const grandTotal = totalAmount - diskon
+
+    // Validasi Max Uang (Agar DB tidak crash/overflow INT)
+    if (uang > 1000000000) {
+        uang = 1000000000
+        uangDiterimaEl.value = 1000000000
+    }
+
+    const kembalian = uang - grandTotal
+    
+    if(uang >= grandTotal) {
+        kembalianEl.innerText = 'Rp ' + kembalian.toLocaleString()
+        kembalianEl.classList.remove('text-red-500', 'text-slate-400')
+        kembalianEl.classList.add('text-green-600')
+        btnConfirmPay.disabled = false
+    } else {
+        // Jika kurang bayar
+        const kurang = grandTotal - uang
+        kembalianEl.innerText = '- Rp ' + kurang.toLocaleString()
+        kembalianEl.classList.remove('text-green-600', 'text-slate-400')
+        kembalianEl.classList.add('text-red-500')
+        btnConfirmPay.disabled = true
+    }
+
+    if(uangDiterimaEl.value === '') resetKembalian()
+}
+
+// Event Listeners for Calculation
+uangDiterimaEl.addEventListener('input', calculatePayment)
+
+
+function resetKembalian() {
+    kembalianEl.innerText = 'Rp 0'
+    kembalianEl.classList.remove('text-green-600', 'text-red-500')
+    kembalianEl.classList.add('text-slate-400')
+    btnConfirmPay.disabled = true
+}
+
+// Enter shortcut di input uang
+uangDiterimaEl.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter' && !btnConfirmPay.disabled) {
+        submitTransaction()
+    }
+})
+// Enter shortcut di input diskon -> pindah focus
+inputDiskonEl.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter') {
+        uangDiterimaEl.focus()
+    }
+})
+
+// Submit Transaksi Final
+function submitTransaction() {
+    // Show Loading on Button
+    btnConfirmPay.disabled = true
+    btnConfirmPay.innerHTML = `
+        <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        Memproses...
+    `
+    
+    // Append Bayar Field
+    const bayarVal = document.getElementById('uangDiterima').value || 0
+    let hiddenBayar = document.getElementById('inputBayarHidden')
+    if(!hiddenBayar) {
+        hiddenBayar = document.createElement('input')
+        hiddenBayar.type = 'hidden'
+        hiddenBayar.name = 'bayar'
+        hiddenBayar.id = 'inputBayarHidden'
+        form.appendChild(hiddenBayar)
+    }
+    hiddenBayar.value = bayarVal
+
+    // Append Diskon Field
+    const diskonVal = document.getElementById('inputDiskon').value || 0
+    let hiddenDiskon = document.getElementById('inputDiskonHidden')
+    if(!hiddenDiskon) {
+        hiddenDiskon = document.createElement('input')
+        hiddenDiskon.type = 'hidden'
+        hiddenDiskon.name = 'diskon'
+        hiddenDiskon.id = 'inputDiskonHidden'
+        form.appendChild(hiddenDiskon)
+    }
+    hiddenDiskon.value = diskonVal
+
+    // Append Discount IDs
+    const discountIdsVal = document.getElementById('discountIds').value || ''
+    let hiddenDiscountIds = document.getElementById('inputDiscountIdsHidden')
+    if(!hiddenDiscountIds) {
+        hiddenDiscountIds = document.createElement('input')
+        hiddenDiscountIds.type = 'hidden'
+        hiddenDiscountIds.name = 'discount_ids'
+        hiddenDiscountIds.id = 'inputDiscountIdsHidden'
+        form.appendChild(hiddenDiscountIds)
+    }
+    hiddenDiscountIds.value = discountIdsVal
+    
+    // Submit Form
+    form.submit()
+}
+
+const searchInput   = document.getElementById('searchInput')
+const categoryInput = document.getElementById('categoryInput')
 
 function fetchItems(animate = true) {
     const search = searchInput.value
@@ -204,17 +393,42 @@ function fetchItems(animate = true) {
         itemsTable.style.opacity = '0.5'
     }
 
-    fetch(`{{ route('kasir.items.search') }}?search=${search}&kategori=${category}`)
-        .then(response => response.text())
-        .then(html => {
-            // Only update if content changed or just force update
-            // For simplicity, we just update. Silent update won't flicker because we don't change opacity
-            itemsTable.innerHTML = html
+    fetch(`{{ route('kasir.items.search') }}?search=${search}&kategori=${category}`, {
+        headers: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+        .then(response => {
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                return response.json();
+            } else {
+                return response.text().then(text => { throw new Error('Expected JSON, got text'); });
+            }
+        })
+        .then(data => {
+            // Update Table
+            itemsTable.innerHTML = data.html
+            
+            // Update Counters
+            if(document.getElementById('filtered-item-count')) {
+                document.getElementById('filtered-item-count').textContent = data.filtered_count;
+            }
+            if(document.getElementById('sidebar-item-count')) {
+                document.getElementById('sidebar-item-count').textContent = data.total_items;
+            }
+            if(document.getElementById('sidebar-category-count')) {
+                document.getElementById('sidebar-category-count').textContent = data.total_categories;
+            }
             
             if (animate) {
                 itemsTable.style.opacity = '1'
             }
-            reattachAddItemListeners()
+            if (animate) {
+                itemsTable.style.opacity = '1'
+            }
+            // reattachAddItemListeners() - Removed due to Event Delegation
         })
         .catch(err => {
             console.error('Error fetching items:', err)
@@ -241,7 +455,7 @@ function debounce(func, timeout = 300){
   };
 }
 
-const debouncedFetch = debounce(() => fetchItems(), 100)
+const debouncedFetch = debounce(() => fetchItems(), 300)
 // Gunakan debounce agak cepat untuk search, dan langsung untuk select
 
 if(searchInput) {
@@ -303,29 +517,26 @@ function showError(message) {
     }, 3000)
 }
 
-function reattachAddItemListeners() {
-    document.querySelectorAll('.add-item').forEach(btn => {
-        // Clone button to remove old listeners (simple way to avoid duplicates if using addEventListener)
-        // or just ensure we don't double bind. 
-        // Better: use delegation on the table body or just re-bind safely.
-        // Since we replace innerHTML, the old buttons are gone. We just bind new ones.
-        
-        btn.addEventListener('click', () => {
-            const stok = parseInt(btn.dataset.stok)
+// Event Delegation for Add Item Buttons
+itemsTable.addEventListener('click', function(e) {
+    const btn = e.target.closest('.add-item');
+    if (!btn) return;
 
-            if (stok <= 0) {
-                showError('Stok barang habis')
-                return
-            }
+    const stok = parseInt(btn.dataset.stok)
 
-            const id    = btn.dataset.id
-            const nama  = btn.dataset.nama
-            const harga = parseInt(btn.dataset.harga)
+    if (stok <= 0) {
+        showError('Stok barang habis')
+        return
+    }
 
-            addItemToCart(id, nama, harga, stok)
-        })
-    })
-}
+    const id    = btn.dataset.id
+    const nama  = btn.dataset.nama
+    const harga = parseInt(btn.dataset.harga)
+
+    addItemToCart(id, nama, harga, stok)
+});
+
+// function reattachAddItemListeners() { ... } // Removed
 
 function addItemToCart(id, nama, harga, stok) {
     if (!cart[id]) {
@@ -341,7 +552,8 @@ function addItemToCart(id, nama, harga, stok) {
 }
 
 // Initial Listener Attach
-reattachAddItemListeners()
+// Initial Listener Attach
+// reattachAddItemListeners() - Removed due to Event Delegation
 
 
 
@@ -411,9 +623,17 @@ function renderCart() {
         </div>`
     })
 
-    totalEl.textContent = 'Rp ' + totalAmount.toLocaleString()
+    // totalEl.textContent = 'Rp ' + totalAmount.toLocaleString() // Removed, using new structure
     itemsInput.value = JSON.stringify(cart)
     btnSubmit.disabled = false
+    
+    // Update Subtotal on Doc
+    if(document.getElementById('subtotal')) {
+        document.getElementById('subtotal').textContent = 'Rp ' + totalAmount.toLocaleString()
+    }
+
+    // Trigger Discount Calculation
+    calculateDocDiscount()
 }
 
 // Update jumlah via input
@@ -471,11 +691,64 @@ function removeItem(id) {
     renderCart()
 }
 
+function calculateDocDiscount() {
+    let totalDiscount = 0
+    let selectedIds = []
+
+    document.querySelectorAll('.discount-checkbox:checked').forEach(cb => {
+        const type = cb.dataset.type
+        const val = parseFloat(cb.dataset.value)
+        const id = cb.dataset.id
+
+        selectedIds.push(id)
+
+        if (type === 'percent') {
+            totalDiscount += Math.round((val / 100) * totalAmount)
+        } else {
+            totalDiscount += val
+        }
+    })
+
+    // Cap at totalAmount
+    if (totalDiscount > totalAmount) totalDiscount = totalAmount
+
+    // Update Display
+    if(document.getElementById('discountDisplay')) {
+        document.getElementById('discountDisplay').textContent = '- Rp ' + totalDiscount.toLocaleString()
+    }
+    
+    const grandTotal = totalAmount - totalDiscount
+    
+    if(document.getElementById('grandTotal')) {
+        document.getElementById('grandTotal').textContent = 'Rp ' + grandTotal.toLocaleString()
+    }
+
+    // Update Hidden Inputs
+    if(document.getElementById('inputDiskon')) {
+        document.getElementById('inputDiskon').value = totalDiscount
+    }
+    if(document.getElementById('discountIds')) {
+        document.getElementById('discountIds').value = selectedIds.join(',')
+    }
+}
+
+// ... (Existing code)
+
 // === PAYMENT MODAL LOGIC ===
 function openPaymentModal() {
+    // Recalculate everything just in case
+    calculateDocDiscount()
+    
+    // Get current grand total from hidden input or recalculate
+    let diskon = parseInt(document.getElementById('inputDiskon').value) || 0
+    let grandTotal = totalAmount - diskon
+    
+    if(grandTotal < 0) grandTotal = 0
     if(totalAmount <= 0) return
     
-    modalTotalEl.innerText = 'Rp ' + totalAmount.toLocaleString()
+    modalTotalEl.innerText = 'Rp ' + grandTotal.toLocaleString()
+    // modalTotalAkhirEl ... removed from modal
+    
     uangDiterimaEl.value = ''
     resetKembalian()
     
@@ -485,77 +758,6 @@ function openPaymentModal() {
 
 function closePaymentModal() {
     paymentModal.classList.add('hidden')
-}
-
-// Hitung Kembalian
-uangDiterimaEl.addEventListener('input', (e) => {
-    let uang = parseInt(e.target.value) || 0
-    
-    // Validasi Max 10 Juta (Agar DB tidak crash/overflow INT)
-    if (uang > 10000000) {
-        uang = 10000000
-        e.target.value = 10000000
-        // Optional: Show error visuals or toast
-    }
-
-    const kembalian = uang - totalAmount
-    
-    if(uang >= totalAmount) {
-        kembalianEl.innerText = 'Rp ' + kembalian.toLocaleString()
-        kembalianEl.classList.remove('text-red-500', 'text-slate-400')
-        kembalianEl.classList.add('text-green-600')
-        btnConfirmPay.disabled = false
-    } else {
-        // Jika kurang bayar
-        const kurang = totalAmount - uang
-        kembalianEl.innerText = '- Rp ' + kurang.toLocaleString()
-        kembalianEl.classList.remove('text-green-600', 'text-slate-400')
-        kembalianEl.classList.add('text-red-500')
-        btnConfirmPay.disabled = true
-    }
-    
-    if(e.target.value === '') resetKembalian()
-})
-
-function resetKembalian() {
-    kembalianEl.innerText = 'Rp 0'
-    kembalianEl.classList.remove('text-green-600', 'text-red-500')
-    kembalianEl.classList.add('text-slate-400')
-    btnConfirmPay.disabled = true
-}
-
-// Enter shortcut di input uang
-uangDiterimaEl.addEventListener('keydown', (e) => {
-    if(e.key === 'Enter' && !btnConfirmPay.disabled) {
-        submitTransaction()
-    }
-})
-
-// Submit Transaksi Final
-function submitTransaction() {
-    // Show Loading on Button
-    btnConfirmPay.disabled = true
-    btnConfirmPay.innerHTML = `
-        <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
-        Memproses...
-    `
-    
-    // Append Bayar Field
-    const bayarVal = document.getElementById('uangDiterima').value || 0
-    let hiddenBayar = document.getElementById('inputBayarHidden')
-    if(!hiddenBayar) {
-        hiddenBayar = document.createElement('input')
-        hiddenBayar.type = 'hidden'
-        hiddenBayar.name = 'bayar'
-        hiddenBayar.id = 'inputBayarHidden'
-        form.appendChild(hiddenBayar)
-    }
-    hiddenBayar.value = bayarVal
-
-    form.submit()
 }
 
 // Tutup modal dengan ESC
@@ -729,11 +931,23 @@ form.addEventListener('submit', e => {
                         </div>
 
                         <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="text-slate-600 font-medium">Total Belanja</span>
-                                <span class="font-bold text-xl text-blue-600">Rp ${new Intl.NumberFormat('id-ID').format(data.total)}</span>
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-slate-600 font-medium">Total</span>
+                                <span class="font-bold text-slate-800">Rp ${new Intl.NumberFormat('id-ID').format(data.total)}</span>
                             </div>
-                            <div class="flex justify-between items-center mb-1 text-sm">
+                            
+                            ${data.diskon > 0 ? `
+                            <div class="flex justify-between items-center mb-2 text-sm text-red-500">
+                                <span>Diskon</span>
+                                <span>- Rp ${new Intl.NumberFormat('id-ID').format(data.diskon)}</span>
+                            </div>
+                            <div class="flex justify-between items-center mb-2 pt-2 border-t border-dashed border-slate-300">
+                                <span class="text-slate-800 font-bold">Total Akhir</span>
+                                <span class="font-bold text-xl text-blue-600">Rp ${new Intl.NumberFormat('id-ID').format(data.total - data.diskon)}</span>
+                            </div>
+                            ` : ''}
+
+                            <div class="flex justify-between items-center mb-1 text-sm mt-2">
                                 <span class="text-slate-500">Bayar (Cash)</span>
                                 <span class="font-mono text-slate-700">Rp ${new Intl.NumberFormat('id-ID').format(data.bayar)}</span>
                             </div>
@@ -772,6 +986,12 @@ form.addEventListener('submit', e => {
                         <div class="divider">--------------------------------</div>
                         <div class="totals">
                             <div class="row total"><span>Total:</span> <span>${new Intl.NumberFormat('id-ID').format(data.total)}</span></div>
+                            
+                            ${data.diskon > 0 ? `
+                                <div class="row"><span>Diskon:</span> <span>- ${new Intl.NumberFormat('id-ID').format(data.diskon)}</span></div>
+                                <div class="row total"><span>Total Akhir:</span> <span>${new Intl.NumberFormat('id-ID').format(data.total - data.diskon)}</span></div>
+                            ` : ''}
+
                             <div class="row"><span>Bayar:</span> <span>${new Intl.NumberFormat('id-ID').format(data.bayar)}</span></div>
                             <div class="row"><span>Kembali:</span> <span>${new Intl.NumberFormat('id-ID').format(data.kembali)}</span></div>
                         </div>
@@ -806,6 +1026,56 @@ form.addEventListener('submit', e => {
         modal.classList.add('hidden');
         modal.classList.remove('flex');
     }
+
+    // --- AUTO REFRESH DISCOUNTS ---
+    function fetchDiscounts() {
+        // Capture currently checked discount IDs
+        const currentChecked = Array.from(document.querySelectorAll('.discount-checkbox:checked')).map(cb => cb.dataset.id);
+
+        fetch('{{ route("kasir.discounts") }}')
+            .then(res => res.json())
+            .then(data => {
+                const container = document.getElementById('discountContainer');
+                
+                if (data.length === 0) {
+                    container.innerHTML = '<div class="text-xs text-slate-400 text-center py-2">Tidak ada diskon tersedia</div>';
+                } else {
+                    let html = '';
+                    data.forEach(d => {
+                        // Check if this discount was previously selected
+                        const isChecked = currentChecked.includes(d.id.toString()) ? 'checked' : '';
+                        
+                        // Formatting
+                        const typeDisplay = d.type === 'percent' ? d.value + '%' : 'Rp ' + new Intl.NumberFormat('id-ID').format(d.value);
+                        
+                        html += `
+                            <label class="flex items-center space-x-2 cursor-pointer p-1 hover:bg-slate-100 rounded">
+                                <input type="checkbox" class="discount-checkbox rounded border-slate-300 text-blue-600 focus:ring-blue-500" 
+                                       data-id="${d.id}" 
+                                       data-type="${d.type}" 
+                                       data-value="${d.value}"
+                                       onchange="calculateDocDiscount()"
+                                       ${isChecked}>
+                                <span class="text-sm text-slate-700 flex-1">
+                                    <span class="font-medium">${d.name}</span>
+                                    <span class="text-xs text-slate-500 ml-1">
+                                        (${typeDisplay})
+                                    </span>
+                                </span>
+                            </label>
+                        `;
+                    });
+                    container.innerHTML = html;
+                }
+                
+                // Recalculate to ensure totals are correct (e.g. if a selected discount expired and is now gone)
+                calculateDocDiscount();
+            })
+            .catch(err => console.error('Failed to fetch discounts:', err));
+    }
+
+    // Refresh every 15 seconds
+    setInterval(fetchDiscounts, 15000);
 </script>
 
 <style>

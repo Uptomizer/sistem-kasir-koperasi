@@ -77,7 +77,7 @@
                         </div>
                         <span class="text-xs font-medium text-slate-400">Total Barang</span>
                     </div>
-                    <div class="text-2xl font-bold text-white pl-10">
+                    <div class="text-2xl font-bold text-white pl-10" id="sidebar-item-count">
                         {{ number_format($itemCount) }}
                     </div>
                 </div>
@@ -90,7 +90,7 @@
                         </div>
                         <span class="text-xs font-medium text-slate-400">Kategori</span>
                     </div>
-                    <div class="text-2xl font-bold text-white pl-10">
+                    <div class="text-2xl font-bold text-white pl-10" id="sidebar-category-count">
                         {{ number_format($kategoriCount) }}
                     </div>
                 </div>

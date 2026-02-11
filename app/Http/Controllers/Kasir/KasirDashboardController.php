@@ -28,7 +28,17 @@ class KasirDashboardController extends Controller
 
         $barang = $query->get();
 
-        return view('kasir.dashboard', compact('barang', 'kategori'));
+        $today = now();
+        $discounts = \App\Models\Diskon::where('status', 'active')
+            ->where(function($q) use ($today) {
+                $q->whereNull('start_date')->orWhere('start_date', '<=', $today);
+            })
+            ->where(function($q) use ($today) {
+                $q->whereNull('end_date')->orWhere('end_date', '>=', $today);
+            })
+            ->get();
+
+        return view('kasir.dashboard', compact('barang', 'kategori', 'discounts'));
     }
 
     public function getItems() 
@@ -48,6 +58,15 @@ class KasirDashboardController extends Controller
         }
 
         $barang = $query->get();
+
+        if (request()->wantsJson()) {
+            return response()->json([
+                'html' => view('kasir.partials.items_list', compact('barang'))->render(),
+                'total_items' => number_format(\App\Models\Barang::count()),
+                'total_categories' => number_format(\App\Models\Kategori::count()),
+                'filtered_count' => number_format($barang->count())
+            ]);
+        }
 
         return view('kasir.partials.items_list', compact('barang'));
     }
@@ -88,6 +107,7 @@ class KasirDashboardController extends Controller
             'tanggal' => $transaction->tanggal,
             'kasir' => $transaction->user->nama_user ?? 'Umum',
             'total' => $transaction->total,
+            'diskon' => $transaction->diskon,
             'bayar' => $transaction->bayar,
             'kembali' => $transaction->kembali,
             'items' => $transaction->detail->map(function($detail) {
@@ -99,5 +119,19 @@ class KasirDashboardController extends Controller
                 ];
             })
         ]);
+    }
+    public function getDiscounts()
+    {
+        $today = now();
+        $discounts = \App\Models\Diskon::where('status', 'active')
+            ->where(function($q) use ($today) {
+                $q->whereNull('start_date')->orWhere('start_date', '<=', $today);
+            })
+            ->where(function($q) use ($today) {
+                $q->whereNull('end_date')->orWhere('end_date', '>=', $today);
+            })
+            ->get(['id', 'name', 'type', 'value']);
+
+        return response()->json($discounts);
     }
 }

@@ -21,6 +21,14 @@
     {{-- FIXED SIDEBAR --}}
     <aside class="fixed inset-y-0 left-0 w-64 bg-[#0B1120] text-slate-300 z-50 transition-transform duration-300 ease-in-out border-r border-slate-800/50 flex flex-col">
         
+        @php
+            // Admin Theme
+            $activeClass = 'bg-blue-600/10 text-blue-400 border-blue-600/20 shadow-sm';
+            $inactiveClass = 'hover:bg-white/5 hover:text-white';
+            $iconActive = 'text-blue-400';
+            $iconInactive = 'text-slate-400 group-hover:text-blue-400';
+        @endphp
+
         {{-- Brand Section --}}
         <div class="h-20 flex items-center px-8 border-b border-white/5 bg-gradient-to-r from-transparent to-white/[0.02]">
             <div class="flex items-center gap-3.5">
@@ -33,7 +41,9 @@
                     <span class="font-bold">
                         Koperasi<span class="text-blue-600">App</span>
                     </span>
-                    <p class="text-[10px] uppercase tracking-widest text-blue-400 font-semibold mt-1">Admin Panel</p>
+                    <p class="text-[10px] uppercase tracking-widest text-blue-400 font-semibold mt-1">
+                        Admin Panel
+                    </p>
                 </div>
             </div>
         </div>
@@ -47,10 +57,10 @@
 
             <a href="{{ route('admin.dashboard') }}"
                class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group border border-transparent
-               {{ request()->routeIs('admin.dashboard') 
-                   ? 'bg-blue-600/10 text-blue-400 border-blue-600/20 shadow-sm' 
-                   : 'hover:bg-white/5 hover:text-white' }}">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-colors {{ request()->routeIs('admin.dashboard') ? 'text-blue-400' : 'text-slate-400 group-hover:text-blue-400' }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+               {{ request()->routeIs('admin.dashboard')
+                   ? $activeClass 
+                   : $inactiveClass }}">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-colors {{ request()->routeIs('admin.dashboard') ? $iconActive : $iconInactive }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="3" y="3" width="7" height="9"></rect>
                     <rect x="14" y="3" width="7" height="5"></rect>
                     <rect x="14" y="12" width="7" height="9"></rect>
@@ -62,9 +72,9 @@
             <a href="{{ route('admin.kategori.index') }}"
                class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group border border-transparent
                {{ request()->routeIs('admin.kategori.*') 
-                   ? 'bg-blue-600/10 text-blue-400 border-blue-600/20 shadow-sm' 
-                   : 'hover:bg-white/5 hover:text-white' }}">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-colors {{ request()->routeIs('admin.kategori.*') ? 'text-blue-400' : 'text-slate-400 group-hover:text-blue-400' }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                   ? $activeClass 
+                   : $inactiveClass }}">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-colors {{ request()->routeIs('admin.kategori.*') ? $iconActive : $iconInactive }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
                     <line x1="7" y1="7" x2="7.01" y2="7"></line>
                 </svg>
@@ -74,9 +84,9 @@
             <a href="{{ route('admin.barang.index') }}"
                class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group border border-transparent
                {{ request()->routeIs('admin.barang.*') 
-                   ? 'bg-blue-600/10 text-blue-400 border-blue-600/20 shadow-sm' 
-                   : 'hover:bg-white/5 hover:text-white' }}">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-colors {{ request()->routeIs('admin.barang.*') ? 'text-blue-400' : 'text-slate-400 group-hover:text-blue-400' }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                   ? $activeClass 
+                   : $inactiveClass }}">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-colors {{ request()->routeIs('admin.barang.*') ? $iconActive : $iconInactive }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
                     <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
                     <line x1="12" y1="22.08" x2="12" y2="12"></line>
@@ -84,31 +94,29 @@
                 <span class="font-medium text-sm">Barang</span>
             </a>
 
-            <div class="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-4 mb-4 mt-8">
-                Laporan & Sistem
-            </div>
-
-            <a href="{{ route('admin.laporan.index') }}"
+            <a href="{{ route('admin.stok-opname.index') }}"
                class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group border border-transparent
-               {{ request()->routeIs('admin.laporan.*') 
-                   ? 'bg-blue-600/10 text-blue-400 border-blue-600/20 shadow-sm' 
-                   : 'hover:bg-white/5 hover:text-white' }}">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-colors {{ request()->routeIs('admin.laporan.*') ? 'text-blue-400' : 'text-slate-400 group-hover:text-blue-400' }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                    <polyline points="14 2 14 8 20 8"></polyline>
-                    <line x1="16" y1="13" x2="8" y2="13"></line>
-                    <line x1="16" y1="17" x2="8" y2="17"></line>
-                    <polyline points="10 9 9 9 8 9"></polyline>
+               {{ request()->routeIs('admin.stok-opname.*') 
+                   ? $activeClass 
+                   : $inactiveClass }}">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-colors {{ request()->routeIs('admin.stok-opname.*') ? $iconActive : $iconInactive }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2m-6 9 2 2 4-4"></path>
                 </svg>
-                <span class="font-medium text-sm">Laporan</span>
+                <span class="font-medium text-sm">Stok Opname</span>
             </a>
+
+
+
+            <div class="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-4 mb-4 mt-8">
+                Kelola Kasir
+            </div>
 
             <a href="{{ route('admin.kasir.index') }}"
                class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group border border-transparent
                {{ request()->routeIs('admin.kasir.*') 
-                   ? 'bg-blue-600/10 text-blue-400 border-blue-600/20 shadow-sm' 
-                   : 'hover:bg-white/5 hover:text-white' }}">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-colors {{ request()->routeIs('admin.kasir.*') ? 'text-blue-400' : 'text-slate-400 group-hover:text-blue-400' }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                   ? $activeClass 
+                   : $inactiveClass }}">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-colors {{ request()->routeIs('admin.kasir.*') ? $iconActive : $iconInactive }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                     <circle cx="9" cy="7" r="4"></circle>
                     <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
@@ -149,7 +157,9 @@
                 {{-- User Profile --}}
                 <div class="flex items-center gap-3 pl-6 border-l border-gray-200">
                     <div class="text-right hidden md:block">
-                        <div class="text-sm font-semibold text-slate-700">Administrator</div>
+                        <div class="text-sm font-semibold text-slate-700">
+                            Administrator
+                        </div>
                     </div>
                     <div class="w-10 h-10 rounded-full bg-slate-200 border-2 border-white shadow-sm overflow-hidden flex items-center justify-center text-slate-500">
                         👤
@@ -200,7 +210,7 @@
 {{-- LOGOUT MODAL --}}
 <div class="no-select">
 <div id="logoutModal"
-     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden">
+     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9999] hidden">
     <div class="flex items-center justify-center min-h-screen px-4">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm animate-modal-in p-6 text-center">
             

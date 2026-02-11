@@ -24,16 +24,28 @@ class AuthController extends Controller
 
         $user = Auth::user();
 
+        \App\Models\ActivityLog::create([
+            'id_user' => $user->id_user,
+            'action' => 'login',
+            'target' => 'System',
+            'details' => 'User logged in via web authentication'
+        ]);
+
         if ($user->role === 'admin') {
-    return redirect()
-        ->route('admin.dashboard')
-        ->with('welcome', 'Selamat Datang Admin');
-}
+            return redirect()
+                ->route('admin.dashboard')
+                ->with('welcome', 'Selamat Datang Admin');
+        }
 
-return redirect()
-    ->route('kasir.dashboard')
-    ->with('welcome', 'Selamat Datang ' . $user->nama_user);
+        if ($user->role === 'supervisor') {
+            return redirect()
+                ->route('supervisor.dashboard')
+                ->with('welcome', 'Selamat Datang Supervisor');
+        }
 
+        return redirect()
+            ->route('kasir.dashboard')
+            ->with('welcome', 'Selamat Datang ' . $user->nama_user);
     }
 
     public function logout(Request $request)

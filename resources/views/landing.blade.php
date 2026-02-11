@@ -72,7 +72,7 @@
                 Fitur Lengkap, Tampilan Sederhana
             </h2>
             <p class="text-slate-600 max-w-2xl mx-auto text-lg leading-relaxed">
-                Kami menggabungkan kekuatan sistem kasir modern dengan kemudahan penggunaan. Semua yang Anda butuhkan untuk mengelola koperasi sekolah ada di sini.
+                Platform kasir modern yang dirancang khusus untuk kebutuhan Koperasi Sekolah. Menggabungkan kemudahan transaksi dengan kedalaman analisis data.
             </p>
         </div>
 
@@ -85,18 +85,18 @@
                 </div>
                 <h3 class="text-xl font-bold text-slate-900 mb-3">Kasir Pintar (POS)</h3>
                 <p class="text-slate-600 leading-relaxed text-sm">
-                    Transaksi super cepat dengan pencarian barang otomatis (Ajax). Support scan barcode dan kalkulasi kembalian akurat.
+                    Transaksi super cepat dengan pencarian barang otomatis (Ajax). Interface yang bersih memudahkan petugas kasir bekerja efisien.
                 </p>
             </div>
 
             {{-- Feature 2 --}}
             <div class="bg-white p-8 rounded-2xl border border-slate-100 shadow-xl shadow-slate-200/40 hover:shadow-2xl hover:shadow-emerald-200/40 hover:-translate-y-1 transition-all duration-300 group">
                 <div class="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">
-                    📦
+                    📋
                 </div>
-                <h3 class="text-xl font-bold text-slate-900 mb-3">Manajemen Stok</h3>
+                <h3 class="text-xl font-bold text-slate-900 mb-3">Stok Opname Digital</h3>
                 <p class="text-slate-600 leading-relaxed text-sm">
-                    Pantau ribuan item secara real-time. Stok otomatis berkurang saat terjual. Dilengkapi fitur kategori untuk kerapian inventory.
+                    Validasi stok fisik vs sistem kini lebih mudah. Fitur opname digital dengan sistem approval supervisor untuk mencegah selisih stok.
                 </p>
             </div>
 
@@ -105,9 +105,9 @@
                 <div class="w-14 h-14 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">
                     📈
                 </div>
-                <h3 class="text-xl font-bold text-slate-900 mb-3">Laporan & Analitik</h3>
+                <h3 class="text-xl font-bold text-slate-900 mb-3">Analitik Profit</h3>
                 <p class="text-slate-600 leading-relaxed text-sm">
-                    Visualisasi omset harian lewat grafik interaktif. Export laporan penjualan ke Excel untuk kebutuhan administrasi sekolah.
+                    Pantau keuntungan bersih, omset, dan tren penjualan harian/mingguan secara real-time melalui Dashboard Supervisor yang canggih.
                 </p>
             </div>
         </div>
@@ -139,66 +139,54 @@
                 </div>
             </div>
 
-            {{-- Row 2: Security --}}
+            {{-- Row 2: Audit & Security --}}
             <div class="flex flex-col md:flex-row-reverse items-center gap-12 animate-on-scroll">
                 <div class="w-full md:w-1/2">
                     <div class="bg-slate-50 rounded-3xl p-8 border border-slate-100 relative overflow-hidden group hover:border-emerald-100 transition-colors">
                          <div class="absolute right-0 top-0 p-3 opacity-10 text-9xl select-none group-hover:scale-110 transition-transform duration-500">🛡️</div>
                          <div class="relative z-10 flex flex-col items-center justify-center h-48 sm:h-64 text-center space-y-4">
-                            <div class="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 text-4xl mb-2">🔒</div>
+                            <div class="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 text-4xl mb-2">👁️</div>
                             <div class="bg-white border border-slate-200 px-4 py-2 rounded-lg text-slate-700 font-bold shadow-sm">
-                                Max Input: Rp 10.000.000
+                                Activity Log Recorded
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="w-full md:w-1/2">
-                    <h3 class="text-3xl font-bold text-slate-900 mb-4">Keamanan Transaksi</h3>
+                    <h3 class="text-3xl font-bold text-slate-900 mb-4">Audit Log & Keamanan Data</h3>
                     <p class="text-slate-600 text-lg leading-relaxed mb-6">
-                        Proteksi ganda untuk keuangan sekolah. Fitur limit input mencegah kesalahan ketik nominal besar (Human Error) dan pemisahan akun Admin/Kasir menjaga integritas data.
+                        Transparansi total. Setiap aktivitas (Input, Edit, Hapus) tercatat otomatis dalam <strong>Audit Log</strong>. Sistem Role-Based (Admin, Supervisor, Kasir) menjaga integritas data sensistif dari akses tidak sah.
                     </p>
                     <div class="flex flex-wrap gap-3">
-                        <span class="px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full text-sm font-semibold">Limit Protection</span>
+                        <span class="px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full text-sm font-semibold">User Tracking</span>
                         <span class="px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full text-sm font-semibold">Role Based</span>
-                        <span class="px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full text-sm font-semibold">Anti Overflow</span>
+                        <span class="px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full text-sm font-semibold">Anti Fraud</span>
                     </div>
                 </div>
             </div>
 
-            {{-- Row 3: Advanced Tools --}}
+            {{-- Row 3: Discounts & Promo --}}
              <div class="flex flex-col md:flex-row items-center gap-12 animate-on-scroll">
                 <div class="w-full md:w-1/2">
-                    <div class="bg-slate-50 rounded-3xl p-8 border border-slate-100 relative overflow-hidden group hover:border-purple-100 transition-colors">
-                        <div class="absolute right-0 top-0 p-3 opacity-10 text-9xl select-none group-hover:scale-110 transition-transform duration-500">⚙️</div>
-                        <div class="relative z-10 grid grid-cols-2 gap-4 h-48 sm:h-64 place-content-center">
-                            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 text-center">
-                                <div class="text-2xl mb-1">🔃</div>
-                                <div class="text-xs font-bold text-slate-600">Sorting</div>
-                            </div>
-                            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 text-center">
-                                <div class="text-2xl mb-1">🔍</div>
-                                <div class="text-xs font-bold text-slate-600">Search</div>
-                            </div>
-                            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 text-center">
-                                <div class="text-2xl mb-1">📜</div>
-                                <div class="text-xs font-bold text-slate-600">History</div>
-                            </div>
-                            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 text-center">
-                                <div class="text-2xl mb-1">📂</div>
-                                <div class="text-xs font-bold text-slate-600">Export</div>
+                    <div class="bg-slate-50 rounded-3xl p-8 border border-slate-100 relative overflow-hidden group hover:border-pink-100 transition-colors">
+                        <div class="absolute right-0 top-0 p-3 opacity-10 text-9xl select-none group-hover:scale-110 transition-transform duration-500">🏷️</div>
+                        <div class="relative z-10 flex flex-col items-center justify-center h-48 sm:h-64 text-center space-y-4">
+                            <div class="w-20 h-20 bg-pink-100 rounded-full flex items-center justify-center text-pink-600 text-4xl mb-2">%</div>
+                            <div class="bg-white border border-slate-200 px-4 py-2 rounded-lg text-slate-700 font-bold shadow-sm">
+                                Diskon Aktif: Akhir Tahun
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="w-full md:w-1/2">
-                    <h3 class="text-3xl font-bold text-slate-900 mb-4">Fitur Penunjang Produktivitas</h3>
+                    <h3 class="text-3xl font-bold text-slate-900 mb-4">Manajemen Diskon & Promosi</h3>
                     <p class="text-slate-600 text-lg leading-relaxed mb-6">
-                        Dilengkapi berbagai tools pintar: <strong>List Sorting</strong> untuk melihat barang terlaris/menipis, <strong>Riwayat Transaksi</strong> lengkap, dan <strong>Export Data</strong> yang fleksibel.
+                        Tingkatkan penjualan dengan strategi harga yang fleksibel. Buat promo diskon (Nominal/Persen), atur periode aktif, dan sistem akan otomatis memotong harga saat transaksi.
                     </p>
                     <div class="flex flex-wrap gap-3">
-                        <span class="px-3 py-1 bg-purple-50 text-purple-700 rounded-full text-sm font-semibold">Tabel Interaktif</span>
-                        <span class="px-3 py-1 bg-purple-50 text-purple-700 rounded-full text-sm font-semibold">Log System</span>
-                        <span class="px-3 py-1 bg-purple-50 text-purple-700 rounded-full text-sm font-semibold">Audit Ready</span>
+                        <span class="px-3 py-1 bg-pink-50 text-pink-700 rounded-full text-sm font-semibold">Auto Discount</span>
+                        <span class="px-3 py-1 bg-pink-50 text-pink-700 rounded-full text-sm font-semibold">Flash Sale</span>
+                        <span class="px-3 py-1 bg-pink-50 text-pink-700 rounded-full text-sm font-semibold">Promo Management</span>
                     </div>
                 </div>
             </div>

@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Barang;
+use App\Models\Penjualan;
 
 class DetailPenjualan extends Model
 {
@@ -14,14 +16,19 @@ class DetailPenjualan extends Model
         'id_barang',
         'jumlah',
         'harga',
+        'diskon',
         'subtotal',
     ];
 
     public $timestamps = false;
 
-    // Relasi
     public function barang()
     {
-        return $this->belongsTo(Barang::class, 'id_barang');
+        return $this->belongsTo(Barang::class, 'id_barang', 'id_barang');
+    }
+
+    public function penjualan()
+    {
+        return $this->belongsTo(Penjualan::class, 'id_penjualan', 'id_penjualan');
     }
 }

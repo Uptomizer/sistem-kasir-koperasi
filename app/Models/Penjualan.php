@@ -13,6 +13,7 @@ class Penjualan extends Model
         'tanggal',
         'id_user',
         'total',
+        'diskon',
         'bayar',
         'kembali',
     ];
